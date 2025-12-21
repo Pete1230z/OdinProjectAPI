@@ -1,0 +1,167 @@
+﻿CLASS
+A class is a reference type that defines a blueprint for objects.
+
+- Defines structure (properties, fields)
+- May define behavior (methods)
+- Does nothing by itself until instantiated
+
+    PROPERTY
+    A named member of a class that exposes a value through accessors.
+
+    - Has a type
+    - Has a name
+    - Has one or more accessors (get, set)
+    - Commonly used for configuration and data models
+
+    Example:
+    public string? ForceStructureAPI { get; set; }
+
+    FIELD
+    A variable declared directly inside a class.
+
+    - Stores data directly
+    - Typically private
+    - Less flexible than properties
+
+    Example:
+    private string _baseUrl;
+
+    METHOD
+    A block of code inside a class that performs an action.
+
+    - Contains executable logic
+    - Can accept parameters
+    - Can return a value or void
+
+    Example:
+    public void LoadConfiguration() { }
+
+    CONSTRUCTOR
+    A special method used to create and initialize an object.
+
+    - Same name as the class
+    - Runs when new is called
+    - No return type
+
+    Example:
+    public OdinSettings() { }
+
+
+OBJECT (INSTANCE)
+A runtime instance of a class.
+
+- Created using new
+- Exists in memory at runtime
+
+Example:
+var settings = new OdinSettings();
+
+
+TYPE
+Defines what kind of data a variable, property, or parameter can hold.
+
+- Determines valid operations
+- Enforced at compile time
+
+    REFERENCE TYPE
+    - Stored on the heap
+    - Passed by reference
+
+    Examples:
+    class
+    string
+
+    VALUE TYPE
+    - Copied by value
+    - Stored directly
+
+    Examples:
+    int
+    bool
+    struct
+
+    NULLABLE
+    Indicates a value may be null.
+
+    - Used with reference types
+    - Important for configuration binding
+
+    Example:
+    string?
+
+
+NULL
+Represents the absence of a value.
+
+- Valid state unless explicitly prevented
+- Must be checked before use
+
+Example:
+if (value == null)
+
+
+ACCESS MODIFIERS
+Control visibility of classes and members.
+
+- public    → Accessible from anywhere
+- private   → Accessible only within the containing class
+- internal  → Accessible within the same assembly
+
+
+NAMESPACE
+A logical grouping of related classes.
+
+- Prevents name collisions
+- Organizes code
+
+Example:
+namespace OdinProjectAPI;
+
+
+PROGRAM
+The entry point of a .NET application.
+
+- Execution starts here
+- Typically located in Program.cs
+
+
+CONFIGURATION
+A system for supplying values to an application at runtime.
+
+- External to compiled code
+- Environment-specific
+
+    CONFIGURATION BINDING
+    Maps configuration values to C# objects by convention.
+
+    - Property name ↔ configuration key
+    - Class structure ↔ JSON structure
+
+
+JSON
+A text-based data format for structured data.
+
+- Uses key–value pairs
+- Human-readable
+
+Example:
+{
+  "Odin": {
+    "GraphQLEndPoint": "..."
+  }
+}
+
+
+DTO (DATA TRANSFER OBJECT)
+A class used only to carry data.
+
+- Properties only
+- No behavior
+- Common for configuration and API responses
+
+Example:
+public class OdinSettingsDto
+{
+    public string? GraphQLEndPoint { get; set; }
+    public string? OutputFolder { get; set; }
+}

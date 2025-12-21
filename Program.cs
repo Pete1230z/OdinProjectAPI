@@ -1,7 +1,8 @@
 ﻿//Load appsettings.json, bind it to strongly-typed C# classes,validate required values, and print them to the console.
+//The orchestration/wiring of the program
 
 using Microsoft.Extensions.Configuration;
-
+using OdinProjectAPI.Configuration;
 
 try
     /*
@@ -11,13 +12,6 @@ try
         3. To build a final IConfiguration object
     */
 {
-    var baseDir = AppContext.BaseDirectory;
-    var settingsPath = Path.Combine(baseDir, "appsettings.json");
-
-    Console.WriteLine("Basedirectory: " + baseDir);
-    Console.WriteLine("Appsettings Path: " + settingsPath);
-    Console.WriteLine("Exists?" + File.Exists(settingsPath));
-
     IConfiguration config = new ConfigurationBuilder()
         .SetBasePath(AppContext.BaseDirectory)
         .AddJsonFile(
@@ -56,21 +50,5 @@ catch (Exception ex)
     Console.WriteLine("ERROR:" + ex.Message);
     //The 1 exit code indicates unknown errors and acts as a catch all. 
     Environment.ExitCode = 1;
-}
-
-public sealed class OdinSettings
-{
-    //get and set accessors perform no other operation than setting or retrieving a value
-    public string? ForceStructureAPI {  get; set; }
-    public string? DISEnumerationAPI { get; set; }
-    public string? GraphQLEndPoint { get; set; }
-
-}
-
-public sealed class AppSettings
-{
-    //References OdinSettings instead of a general other type such as a string
-    public OdinSettings Odin { get; set; } = new();
-    public string? OutputFolder { get; set; }
 }
 
