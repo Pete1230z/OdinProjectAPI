@@ -1,7 +1,4 @@
-﻿//This namespace contains the HttpClient class and related types, which are used to send HTTP requests and receive HTTP responses from web services and APIs.
-//using System.Net.Http;
-
-//This namespace provides classes for character encoding (like ASCII, UTF-8, UTF-16) and helper classes for manipulating strings efficiently, such as StringBuilder.
+﻿//This namespace provides classes for character encoding (like ASCII, UTF-8, UTF-16) and helper classes for manipulating strings efficiently, such as StringBuilder.
 using System.Text;
 
 //This is the built -in, high - performance library in modern .NET for handling JavaScript Object Notation (JSON) data. It includes the JsonSerializer class, which allows developers to:
@@ -13,6 +10,8 @@ namespace OdinProjectAPI.Services;
 
 public sealed class GraphQLClient
 {
+    // SECTION 1: DEPENDENCIES / STATE
+
     // A private field that holds the HttpClient instance.
     // - 'HttpClient' is the TYPE
     // - '_http' is the FIELD NAME
@@ -21,6 +20,8 @@ public sealed class GraphQLClient
 
     // A private field that stores the GraphQL endpoint URL
     private readonly string _endpoint;
+
+    // SECTION 2: CONSTRUCTION / SETUP
 
     //Constructor: runs when a new GraphQLClient is created
     public GraphQLClient(HttpClient http, string endpoint)
@@ -32,6 +33,9 @@ public sealed class GraphQLClient
         _endpoint = endpoint;
     }
 
+    // SECTION 3: EXECUTE GRAPHQL REQUEST
+
+    // Sends a GraphQL query to the server and returns the raw JSON response.
     public async Task<string> ExecuteRawAsync(string query)
     {
         // Creates an anonymous C# object with ONE property named "query"
