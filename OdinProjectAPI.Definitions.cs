@@ -1,4 +1,6 @@
-﻿//Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
+﻿using System.Text.Json.Serialization;
+
+//Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
 namespace OdinProjectAPI.Definitions;
 
 // GENERIC GRAPHQL RESPONSE WRAPPER
@@ -12,6 +14,9 @@ namespace OdinProjectAPI.Definitions;
 //Documentation: https://spec.graphql.org/October2021/#sec-Overview
 public sealed class GraphQLRespone<T>
 {
+    // Maps JSON key "data" -> C# property Data
+    [JsonPropertyName("data")]
+
     // This property maps to the "data" field in the JSON response.
     // The type T will be replaced with a real type at runtime.
     //Generics Documentation: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/generics
@@ -24,8 +29,11 @@ public sealed class GraphQLRespone<T>
 // { "__typename": "Query" }
 public sealed class TypenameData
 {
+    // Maps JSON key "__typename" -> C# property __typename
+    [JsonPropertyName("__typename")]
+
     // This property name matches the JSON key exactly.
     // "__typename" is a special GraphQL meta-field.
-    //Documentation: https://spec.graphql.org/October2021/#sec-Overview
+    //Documentation: https://spec.graphql.org/October2021/#sec-Type-Name-Introspection
     public string? __typename { get; set; }
 }
