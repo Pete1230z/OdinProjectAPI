@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using OdinProjectAPI.Configuration;
 using OdinProjectAPI.Services;
 using System.Text.Json;
-using OdinProjectAPI.Definitions;
+using OdinProjectAPI.DTOs;
 
 try
     //PHASE 1: LOAD AND VALIDATE CONFIGURATION
@@ -68,7 +68,13 @@ try
     // This is written in the GraphQL query language, not C#.
     // "__typename" is a special built-in GraphQL field that tells us
     // the name of the root type returned by the server.
-    var query = @"query {__typename}";
+    var query = @"
+    query {
+      wegCardCollection(limit: 5, offset: 0) {
+        name
+      }
+    }";
+
 
     // - ExecuteRawAsync sends the query to the server
     // - await pauses execution until the HTTP response is received
@@ -82,14 +88,13 @@ try
 
     // Convert the raw JSON string into a typed object:
     // GraphQLResponse<TypenameData> represents: { "data": { "__typename": "Query" } }
-    var parsed = JsonSerializer.Deserialize<GraphQLRespone<TypenameData>>(result);
+    var wegParsed = JsonSerializer.Deserialize<GraphQLResponse<WegCardCollectionData>>(result);
 
-    Console.WriteLine("Parsed Typename:");
-    /*
-    parsed holds a reference so an object so you can access layers of the "object" it
-    parsed -> Data -> __typename = "Query"
-     */
-    Console.WriteLine(parsed?.Data?.__typename);
+    var firstName = wegParsed?.Data?.WegCardCollection?.FirstOrDefault()?.Name;
+
+    Console.WriteLine("First WEG card name:");
+    Console.WriteLine(firstName);
+
 }
 catch (Exception ex)
 {

@@ -10,11 +10,10 @@
    strongly-typed C# objects.
 */
 
-
 using System.Text.Json.Serialization;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
-namespace OdinProjectAPI.Definitions;
+namespace OdinProjectAPI.DTOs;
 
 // GENERIC GRAPHQL RESPONSE WRAPPER
 
@@ -25,7 +24,7 @@ namespace OdinProjectAPI.Definitions;
 // }
 // The <T> means this class can wrap ANY type of data.
 //Documentation: https://spec.graphql.org/October2021/#sec-Overview
-public sealed class GraphQLRespone<T>
+public sealed class GraphQLResponse<T>
 {
     // Maps JSON key "data" -> C# property Data
     [JsonPropertyName("data")]
@@ -36,17 +35,21 @@ public sealed class GraphQLRespone<T>
     public T? Data { get; set; }
 }
 
-// SPECIFIC DATA SHAPE FOR __typename
-
-// This class represents the INNER object:
-// { "__typename": "Query" }
-public sealed class TypenameData
+//Documentation: https://spec.graphql.org/October2021/#sec-Overview
+public sealed class WegCardCollectionData
 {
-    // Maps JSON key "__typename" -> C# property __typename
-    [JsonPropertyName("__typename")]
+    /// { "data": { "wegCardCollection": [ { "name": "..." } ] } }
+    [JsonPropertyName("wegCardCollection")]
 
-    // This property name matches the JSON key exactly.
-    // "__typename" is a special GraphQL meta-field.
-    //Documentation: https://spec.graphql.org/October2021/#sec-Type-Name-Introspection
-    public string? __typename { get; set; }
+    public List<WegCardItem>? WegCardCollection { get; set; }
+}
+
+public sealed class WegCardItem
+{
+    // Maps JSON key "data" -> C# property Data
+    // This class represents the INNER object:
+    // { "__typename": "Query" }
+    [JsonPropertyName("name")]
+
+    public string? Name { get; set; }
 }
