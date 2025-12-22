@@ -3,8 +3,10 @@
 
 using Microsoft.Extensions.Configuration;
 using OdinProjectAPI.Configuration;
+using OdinProjectAPI.Services;
 
 try
+    //PHASE 1: LOAD AND VALIDATE CONFIGURATION
     /*
         ConfigurationBuilder creates the configuration pipeline.
         1. Where to look (BaseDirectory = runtime folder)
@@ -44,6 +46,19 @@ try
     Console.WriteLine($"DISAPI Base: {settings.Odin.DISEnumerationAPI}");
     Console.WriteLine($"GraphQL Endpoint: {settings.Odin.GraphQLEndPoint}");
     Console.WriteLine($"Output Folder: {settings.OutputFolder}");
+
+    //PHASE 2: USE THE GRAPHQL CLIENT
+
+    using var http = new HttpClient();
+
+    var client = new GraphQLClient(http, settings.Odin.GraphQLEndPoint);
+
+    var query = @"query {__typename}";
+
+    var result = await client.ExecuteRawAsync(query);
+
+    Console.WriteLine("GraphQL Response");
+    Console.WriteLine(result);
 }
 catch (Exception ex)
 {

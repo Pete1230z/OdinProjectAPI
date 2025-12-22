@@ -1,0 +1,63 @@
+﻿//This namespace contains the HttpClient class and related types, which are used to send HTTP requests and receive HTTP responses from web services and APIs.
+//using System.Net.Http;
+
+//This namespace provides classes for character encoding (like ASCII, UTF-8, UTF-16) and helper classes for manipulating strings efficiently, such as StringBuilder.
+using System.Text;
+
+//This is the built -in, high - performance library in modern .NET for handling JavaScript Object Notation (JSON) data. It includes the JsonSerializer class, which allows developers to:
+//Serialize: Convert a C# object into a JSON string or stream.
+//Deserialize: Convert a JSON string or stream back into a C# object.
+using System.Text.Json;
+
+namespace OdinProjectAPI.Services;
+
+public sealed class GraphQLClient
+{
+    // A private field that holds the HttpClient instance.
+    // - 'HttpClient' is the TYPE
+    // - '_http' is the FIELD NAME
+    // - 'readonly' means it can only be assigned in the constructor
+    private readonly HttpClient _http;
+
+    // A private field that stores the GraphQL endpoint URL
+    private readonly string _endpoint;
+
+    //Constructor: runs when a new GraphQLClient is created
+    public GraphQLClient(HttpClient http, string endpoint)
+    {
+        //Assigns incoming HttpClient to the private field
+        _http = http;
+
+        //Assign the endpoint URL to the private field
+        _endpoint = endpoint;
+    }
+
+    public async Task<string> ExecuteRawAsync(string query)
+    {
+        // Creates an anonymous C# object with ONE property named "query"
+        var payload = new {query};
+
+        // Serializes the C# object into a JSON string.
+        // This uses System.Text.Json, Microsoft's built-in JSON library.
+        var json = JsonSerializer.Serialize(payload);
+
+        // Serializes the C# object into a JSON string.
+        // This uses System.Text.Json, Microsoft's built-in JSON library.
+        using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // Sends an HTTP POST request to the GraphQL endpoint.
+        // - POST is required by GraphQL when sending a body
+        // - await pauses execution until the response is received
+        using var response = await _http.PostAsync(_endpoint, content);
+
+        // Checks if the HTTP status code is NOT in the 200–299 range.
+        // GraphQL servers may return errors with 400 or 500 codes.
+        var body = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"GraphQL failed: {(int)response.StatusCode }\n{body}");
+
+        return body;
+    }
+}
+
