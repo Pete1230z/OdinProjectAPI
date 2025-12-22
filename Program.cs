@@ -4,6 +4,8 @@
 using Microsoft.Extensions.Configuration;
 using OdinProjectAPI.Configuration;
 using OdinProjectAPI.Services;
+using System.Text.Json;
+using OdinProjectAPI.Definitions;
 
 try
     //PHASE 1: LOAD AND VALIDATE CONFIGURATION
@@ -69,6 +71,19 @@ try
 
     Console.WriteLine("GraphQL Response");
     Console.WriteLine(result);
+
+    //PHASE 3: Send Test Query
+
+    // Convert the raw JSON string into a typed object:
+    // GraphQLResponse<TypenameData> represents: { "data": { "__typename": "Query" } }
+    var parsed = JsonSerializer.Deserialize<GraphQLRespone<TypenameData>>(result);
+
+    Console.WriteLine("Parsed Typename:");
+    /*
+    parsed holds a reference so an object so you can access layers of the "object" it
+    parsed -> Data -> __typename = "Query"
+     */
+    Console.WriteLine(parsed?.Data?.__typename);
 }
 catch (Exception ex)
 {
