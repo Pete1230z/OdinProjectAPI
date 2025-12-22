@@ -6,6 +6,7 @@ using System.Text;
 //Deserialize: Convert a JSON string or stream back into a C# object.
 using System.Text.Json;
 
+//Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
 namespace OdinProjectAPI.Services;
 
 public sealed class GraphQLClient
@@ -54,6 +55,7 @@ public sealed class GraphQLClient
 
         // Serializes the C# object into a JSON string.
         // This uses System.Text.Json, Microsoft's built-in JSON library.
+        //Using implements IDisposable which releases unamanaged resources https://learn.microsoft.com/en-us/dotnet/api/system.idisposable?view=net-10.0
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         // 3D: SEND HTTP REQUEST
