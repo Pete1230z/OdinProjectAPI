@@ -24,8 +24,9 @@ try
         .Build();
 
     /*
-    Bind configuration values into strongly-typed C# objects.
-    This uses Microsoft.Extensions.Configuration.Binder.
+    Reads the JSON file
+    Creates an AppSettings object
+    Fills in properties by name
     */
     var settings = config.Get<AppSettings>()
         ?? throw new Exception("Failed to bind configuration.");
@@ -49,12 +50,21 @@ try
 
     //PHASE 2: USE THE GRAPHQL CLIENT
 
+    // HttpClient is responsible for sending HTTP requests (POST, GET, etc.).
+    // This object manages network connections and should be reused rather than recreated repeatedly.
+    //Documentation https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-10.0
     using var http = new HttpClient();
 
     var client = new GraphQLClient(http, settings.Odin.GraphQLEndPoint);
 
+    // This is written in the GraphQL query language, not C#.
+    // "__typename" is a special built-in GraphQL field that tells us
+    // the name of the root type returned by the server.
     var query = @"query {__typename}";
 
+    // - ExecuteRawAsync sends the query to the server
+    // - await pauses execution until the HTTP response is received
+    // - result will contain the raw JSON response as a string
     var result = await client.ExecuteRawAsync(query);
 
     Console.WriteLine("GraphQL Response");

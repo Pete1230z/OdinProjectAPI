@@ -38,25 +38,38 @@ public sealed class GraphQLClient
     // Sends a GraphQL query to the server and returns the raw JSON response.
     public async Task<string> ExecuteRawAsync(string query)
     {
-        // Creates an anonymous C# object with ONE property named "query"
+        // 3A: BUILD GRAPHQL REQUEST BODY
+
+        // Create an object that matches the GraphQL HTTP payload shape:
+        // { "query": "<graphql query string>" }
         var payload = new {query};
+
+        // 3B: SERIALIZE PAYLOAD TO JSON
 
         // Serializes the C# object into a JSON string.
         // This uses System.Text.Json, Microsoft's built-in JSON library.
         var json = JsonSerializer.Serialize(payload);
 
+        // 3C: PREPARE HTTP CONTENT
+
         // Serializes the C# object into a JSON string.
         // This uses System.Text.Json, Microsoft's built-in JSON library.
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        // 3D: SEND HTTP REQUEST
 
         // Sends an HTTP POST request to the GraphQL endpoint.
         // - POST is required by GraphQL when sending a body
         // - await pauses execution until the response is received
         using var response = await _http.PostAsync(_endpoint, content);
 
+        // 3E: READ HTTP RESPONSE
+
         // Checks if the HTTP status code is NOT in the 200–299 range.
         // GraphQL servers may return errors with 400 or 500 codes.
         var body = await response.Content.ReadAsStringAsync();
+
+        // 3F: HANDLE ERRORS
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"GraphQL failed: {(int)response.StatusCode }\n{body}");
