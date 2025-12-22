@@ -1,4 +1,12 @@
-﻿namespace OdinProjectAPI.Configuration
+﻿/* PURPOSE:
+    This file defines configuration data transfer objects (DTOs) used to bind values
+    from appsettings.json into strongly-typed C# objects at application startup.
+
+    This file is part of the Configuration layer and is consumed by Program.cs
+    during application initialization.
+*/
+
+namespace OdinProjectAPI.Configuration
 {
     //DTO (DATA TRANSFER OBJECT) A class used only to carry data.
     public sealed class OdinSettingsDTO

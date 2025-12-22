@@ -1,4 +1,17 @@
-﻿using System.Text.Json.Serialization;
+﻿/* PURPOSE:
+   This file defines data transfer objects (DTOs) that model the structure of
+   GraphQL responses returned by the ODIN Content API.
+
+   It provides a generic wrapper for the GraphQL "data" envelope and specific
+   DTOs for individual query result shapes.
+
+   This file is part of the Definitions layer and is consumed by Program.cs
+   and deserialization logic when converting GraphQL JSON responses into
+   strongly-typed C# objects.
+*/
+
+
+using System.Text.Json.Serialization;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
 namespace OdinProjectAPI.Definitions;

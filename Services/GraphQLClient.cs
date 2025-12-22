@@ -1,4 +1,16 @@
-﻿//This namespace provides classes for character encoding (like ASCII, UTF-8, UTF-16) and helper classes for manipulating strings efficiently, such as StringBuilder.
+﻿/* PURPOSE:
+   This file defines a GraphQL client responsible for executing GraphQL-over-HTTP
+   requests against the ODIN Content API.
+
+   It encapsulates HTTP POST request creation, JSON serialization of GraphQL queries,
+   request execution, and basic error handling.
+
+   This file is part of the Services (Transport/Protocol) layer and is consumed by
+   Program.cs to execute GraphQL queries and retrieve raw JSON responses.
+*/
+
+
+//This namespace provides classes for character encoding (like ASCII, UTF-8, UTF-16) and helper classes for manipulating strings efficiently, such as StringBuilder.
 using System.Text;
 
 //This is the built -in, high - performance library in modern .NET for handling JavaScript Object Notation (JSON) data. It includes the JsonSerializer class, which allows developers to:

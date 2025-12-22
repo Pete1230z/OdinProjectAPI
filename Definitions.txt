@@ -1,4 +1,6 @@
-﻿CLASS TYPES (C#)
+﻿This file exists to document definitions.
+
+CLASS TYPES (C#)
 
 REGULAR CLASS
 A standard class that can be instantiated and inherited.

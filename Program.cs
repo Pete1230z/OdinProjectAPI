@@ -1,4 +1,10 @@
-﻿//Load appsettings.json, bind it to strongly-typed C# classes,validate required values, and print them to the console.
+﻿/* PURPOSE:
+   This file serves as the application entry point and orchestration layer.
+   Program.cs does not contain business logic or data models.
+*/
+
+
+//Load appsettings.json, bind it to strongly-typed C# classes,validate required values, and print them to the console.
 //The orchestration/wiring of the program
 
 using Microsoft.Extensions.Configuration;
