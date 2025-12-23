@@ -70,11 +70,9 @@ try
     // the name of the root type returned by the server.
     var query = @"
     query {
-      wegCardCollection(limit: 5, offset: 0) {
+      wegCardCollection(limit: 1, offset: 0) {
         name
-        origin {
-            name
-        }
+        images
       }
     }";
 

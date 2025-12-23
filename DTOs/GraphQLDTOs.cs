@@ -76,10 +76,19 @@ public sealed class WegCardItem
 
     [JsonPropertyName("origin")]
     public List<DotCategoryDTO>? Origin {  get; set; }
+
+    [JsonPropertyName("images")]
+    public string? ImagesRaw { get; set; }
 }
 
 public sealed class DotCategoryDTO
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
+}
+
+public sealed class WebImageDTO
+{
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
 }
