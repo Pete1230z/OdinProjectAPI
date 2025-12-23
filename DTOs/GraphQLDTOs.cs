@@ -10,6 +10,27 @@
    strongly-typed C# objects.
 */
 
+/*
+GRAPHQL DESERIALIZATION SHAPE
+
+GraphQLResponse<T>
+ └─ Data (WegCardCollectionData)
+     └─ WegCardCollection (List<WegCardItem>)
+         └─ WegCardItem
+             ├─ Name
+             ├─ Origin        (only populated if requested in query)
+             ├─ Notes         (only populated if requested in query)
+             ├─ ImagesRaw     (JSON string; parsed separately if requested)
+             ├─ SectionsRaw   (JSON string; parsed separately if requested)
+             └─ Other fields as added over time
+
+Notes:
+- GraphQL always wraps responses in a "data" object.
+- DTOs are a superset of possible fields.
+- Missing fields in a query simply deserialize as null.
+- No errors occur if a field is not requested.
+*/
+
 using System.Text.Json.Serialization;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
@@ -51,5 +72,14 @@ public sealed class WegCardItem
     // { "__typename": "Query" }
     [JsonPropertyName("name")]
 
+    public string? Name { get; set; }
+
+    [JsonPropertyName("origin")]
+    public List<DotCategoryDTO>? Origin {  get; set; }
+}
+
+public sealed class DotCategoryDTO
+{
+    [JsonPropertyName("name")]
     public string? Name { get; set; }
 }

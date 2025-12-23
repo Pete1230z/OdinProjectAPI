@@ -72,6 +72,9 @@ try
     query {
       wegCardCollection(limit: 5, offset: 0) {
         name
+        origin {
+            name
+        }
       }
     }";
 
@@ -90,7 +93,7 @@ try
     // GraphQLResponse<TypenameData> represents: { "data": { "__typename": "Query" } }
     var wegParsed = JsonSerializer.Deserialize<GraphQLResponse<WegCardCollectionData>>(result);
 
-    var firstName = wegParsed?.Data?.WegCardCollection?.FirstOrDefault()?.Name;
+    var firstName = wegParsed?.Data?.WegCardCollection?.FirstOrDefault()?.Origin?.FirstOrDefault()?.Name;
 
     Console.WriteLine("First WEG card name:");
     Console.WriteLine(firstName);
