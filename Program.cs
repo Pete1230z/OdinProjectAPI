@@ -91,10 +91,20 @@ try
     // GraphQLResponse<TypenameData> represents: { "data": { "__typename": "Query" } }
     var wegParsed = JsonSerializer.Deserialize<GraphQLResponse<WegCardCollectionData>>(result);
 
-    var firstName = wegParsed?.Data?.WegCardCollection?.FirstOrDefault()?.Origin?.FirstOrDefault()?.Name;
+    var imageService = new WebImageService();
 
-    Console.WriteLine("First WEG card name:");
-    Console.WriteLine(firstName);
+    var item = wegParsed?.Data?.WegCardCollection?.FirstOrDefault();
+
+    var images = imageService.ParseImages(item?.ImagesRaw);
+
+    var firstImageUrl = images.Count > 0 ? imageService.BuildAbsoluteUrl(images[0].Url) : "(no image)";
+
+    var bytes = await http.GetByteArrayAsync(firstImageUrl);
+
+    Console.WriteLine($"Card: {item?.Name}");
+    Console.WriteLine($"Url: {item?.ImagesRaw}");
+    Console.WriteLine($"First Image Url: {firstImageUrl}");
+    Console.WriteLine($"Downloaded {bytes.Length} bytes");
 
 }
 catch (Exception ex)
