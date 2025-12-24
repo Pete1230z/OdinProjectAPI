@@ -12,6 +12,7 @@ using OdinProjectAPI.Configuration;
 using OdinProjectAPI.Services;
 using System.Text.Json;
 using OdinProjectAPI.DTOs;
+using OdinProjectAPI.Infrastructure;
 
 try
     //PHASE 1: LOAD AND VALIDATE CONFIGURATION
@@ -105,6 +106,8 @@ try
     Console.WriteLine($"Url: {item?.ImagesRaw}");
     Console.WriteLine($"First Image Url: {firstImageUrl}");
     Console.WriteLine($"Downloaded {bytes.Length} bytes");
+
+    await WegSubnavStructure.WegSubnavAsync();
 
 }
 catch (Exception ex)
