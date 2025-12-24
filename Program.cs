@@ -9,10 +9,9 @@
 
 using Microsoft.Extensions.Configuration;
 using OdinProjectAPI.Configuration;
-using OdinProjectAPI.Services;
 using System.Text.Json;
-using OdinProjectAPI.DTOs;
-using OdinProjectAPI.Infrastructure;
+using OdinProjectAPI.GraphQL;
+using OdinProjectAPI.WegSubnav;
 
 try
     //PHASE 1: LOAD AND VALIDATE CONFIGURATION

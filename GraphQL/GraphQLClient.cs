@@ -19,7 +19,7 @@ using System.Text;
 using System.Text.Json;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
-namespace OdinProjectAPI.Services;
+namespace OdinProjectAPI.GraphQL;
 
 public sealed class GraphQLClient
 {

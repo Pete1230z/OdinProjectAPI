@@ -5,10 +5,9 @@ as a JSON string rather than a structured object.
 */
 
 using System.Text.Json;
-using OdinProjectAPI.DTOs;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
-namespace OdinProjectAPI.Services;
+namespace OdinProjectAPI.GraphQL;
 
 public sealed class WebImageService
 {

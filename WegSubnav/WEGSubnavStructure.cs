@@ -2,7 +2,7 @@
 PURPOSE:
 This file is used to help determine the shape of the DotCMS subnavigation endpoint so we can then create dropdowns on a front end for users"
 */
-namespace OdinProjectAPI.Infrastructure;
+namespace OdinProjectAPI.WegSubnav;
 
 /*One-off utility used to retrieve and inspect the raw WEG category tree from the ODIN DotCMS subnavigation endpoint.*/
 //Docs on Static Classes: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members
@@ -31,6 +31,7 @@ public static class WegSubnavStructure
         Console.WriteLine("First 3000 Characters");
         Console.WriteLine(json[..Math.Min(3000, json.Length)]);
 
+        //Docs: https://learn.microsoft.com/dotnet/api/system.io.file.writealltextasync
         await File.WriteAllTextAsync("weg-subnav-raw.json", json);
         Console.WriteLine("Saved: weg-subnav-raw.json");
     }

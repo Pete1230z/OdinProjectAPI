@@ -34,7 +34,7 @@ Notes:
 using System.Text.Json.Serialization;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
-namespace OdinProjectAPI.DTOs;
+namespace OdinProjectAPI.GraphQL;
 
 // GENERIC GRAPHQL RESPONSE WRAPPER
 
