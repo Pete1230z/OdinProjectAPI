@@ -72,4 +72,42 @@ public static class WegSubnavStructure
             Console.WriteLine($"{childNode.Name} | variable {childNode.Variable}");
         }
     }
+
+    public static async Task BuildAndCacheNormalizedTreeAsync(string outPath = "weg-categories.json")
+    {
+        //Docs: https://learn.microsoft.com/en-us/dotnet/api/system.io.file?view=net-10.0
+        var json = await File.ReadAllTextAsync("weg-subnav-raw.json");
+
+        // Deserialize the raw JSON into DTOs that mirror the API response shape.
+        // PropertyNameCaseInsensitive allows matching JSON keys regardless of casing.
+        var data = JsonSerializer.Deserialize<WegSubnavResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        // Extract the root "content" node.
+        //Docs Invalid Exception: https://learn.microsoft.com/en-us/dotnet/api/system.invalidoperationexception?view=net-10.0 
+        var rootRaw = data?.Content ?? throw new InvalidOperationException("Missing content root node.");
+
+        // Normalize the raw root node into the internal category model.
+        // This converts the DotCMS-specific structure into a UI- and filter-safe tree.
+        var rootNormalized = WegCategoryNormalizer.Normalize(rootRaw, parentVariable: null)
+            ?? throw new InvalidOperationException("Root node missing required variable");
+
+        // RetrievedUtc records when this reference data was generated.
+        // RootNodes is a list to support potential future multi-root scenarios.
+        var cache = new WegCategoryCache
+        {
+            RetrievedUtc = DateTime.UtcNow,
+            RootNodes = new List<WegCategoryNode> { rootNormalized }
+        };
+
+        // Serialize the normalized category tree into human-readable JSON.
+        // WriteIndented is enabled so the file can be inspected and debugged easily.
+        //JSONSerializerOptions Docs: https://learn.microsoft.com/en-us/dotnet/api/system.text.json.jsonserializeroptions?view=net-10.0
+        var outJson = JsonSerializer.Serialize(cache, new JsonSerializerOptions {  WriteIndented = true });
+
+        await File.WriteAllTextAsync(outPath, outJson);
+
+        Console.WriteLine($"Wrote normalized cache: {outPath}");
+        Console.WriteLine($"Root: {rootNormalized.DisplayName} ({rootNormalized.Variable})");
+        Console.WriteLine($"Root children count: {rootNormalized.Children.Count}");
+    }
 }
