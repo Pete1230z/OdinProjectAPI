@@ -107,7 +107,7 @@ try
     Console.WriteLine($"Downloaded {bytes.Length} bytes");
 
     await WegSubnavStructure.WegSubnavAsync();
-
+    await WegSubnavStructure.InspectParsedAsync();
 }
 catch (Exception ex)
 {

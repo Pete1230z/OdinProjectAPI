@@ -2,6 +2,7 @@
 PURPOSE:
 This file is used to help determine the shape of the DotCMS subnavigation endpoint so we can then create dropdowns on a front end for users"
 */
+using System.Text.Json;
 namespace OdinProjectAPI.WegSubnav;
 
 /*One-off utility used to retrieve and inspect the raw WEG category tree from the ODIN DotCMS subnavigation endpoint.*/
@@ -34,5 +35,41 @@ public static class WegSubnavStructure
         //Docs: https://learn.microsoft.com/dotnet/api/system.io.file.writealltextasync
         await File.WriteAllTextAsync("weg-subnav-raw.json", json);
         Console.WriteLine("Saved: weg-subnav-raw.json");
+    }
+
+    // Reads the previously saved subnav JSON file and inspects its structure.
+    // This proves our DTOs match the real response shape and that traversal works.
+    public static async Task InspectParsedAsync()
+    {
+        // Read the raw JSON captured earlier
+        var json = await File.ReadAllTextAsync("weg-subnav-raw.json");
+
+        //Deserialize into DTOs that mirror the API response
+        var data = JsonSerializer.Deserialize<WegSubnavResponse>(json, new JsonSerializerOptions {  PropertyNameCaseInsensitive = true });
+
+        //Check root node
+        Console.WriteLine($"Root Node Name: {data?.Content?.Name}");
+
+        //Check top level children count
+        Console.WriteLine($"Top Level children count: {data?.Content?.Children?.Count ?? 0}");
+
+        //!. documentation: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
+        var domainNode = data!.Content!.Children!["domain"];
+
+        Console.WriteLine("Domain Children");
+
+        /*Tuple deconstruction. 
+         _ means “ignore this value”
+        childNode captures the dictionary value
+
+        Dictionary<string, WegSubnavNodeRaw>
+        .Key → the dictionary key (e.g., "sea-637ec6")
+        .Value → the actual child node object
+        Docs: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/deconstruct
+        */
+        foreach (var (_, childNode) in domainNode.Children)
+        {
+            Console.WriteLine($"{childNode.Name} | variable {childNode.Variable}");
+        }
     }
 }
