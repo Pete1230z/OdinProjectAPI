@@ -171,6 +171,11 @@ public class Outer
     - Can accept parameters
     - Can return a value or void
 
+    Structure
+    - Return Type
+    - Method Name
+    - Parameters
+
     Example:
     public void LoadConfiguration() { }
 

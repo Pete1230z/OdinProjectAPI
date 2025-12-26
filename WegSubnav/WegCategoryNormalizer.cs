@@ -36,14 +36,19 @@ public static class WegCategoryNormalizer
             ParentVariable = parentVariable
         };
 
+        // Leaf node — nothing more to normalize
         if (raw.Children is null || raw.Children.Count == 0)
         {
             return node;
         }
 
+        // Recursively normalize all children
         foreach (var (_, childRaw) in raw.Children)
         {
+
+            // Pass current variable as the parent for children
             var childNode = Normalize(childRaw, variable);
+            // Only keep children that passed normalization rules
             if (childNode != null)
             {
                 node.Children.Add(childNode);

@@ -108,6 +108,36 @@ try
 
     await WegSubnavStructure.WegSubnavAsync();
     await WegSubnavStructure.InspectParsedAsync();
+    await WegSubnavStructure.BuildAndCacheNormalizedTreeAsync();
+
+    //Testing dropdowns
+    var cache = await WegCategoryCacheReader.LoadAsync();
+
+    var root = cache.RootNodes[0];
+
+    var domainNode = WegCategoryCacheReader.FindByVariable(root, "domain")
+        ?? throw new Exception("Domain node not found.");
+
+    var domainDropdown  = WegCategoryCacheReader.ToDropdownOptions(domainNode);
+
+    Console.WriteLine("Domain Dropdown:");
+    foreach (var option in domainDropdown)
+    {
+        Console.WriteLine($"{option.Label} {option.Value}");
+    }
+
+    var selectedDomainVariable = domainDropdown.First(o => o.Label == "Land").Value;
+
+    var selectedDomainNode = WegCategoryCacheReader.FindByVariable(root, selectedDomainVariable) ?? throw new InvalidOperationException("Selected domain not found.");
+
+    var weaponSystemDropdown = WegCategoryCacheReader.ToDropdownOptions(selectedDomainNode);
+
+    Console.WriteLine("\nWeapon System Types (Land):");
+    foreach (var option in weaponSystemDropdown)
+    {
+        Console.WriteLine($"{option.Label} {option.Value}");
+    }
+
 }
 catch (Exception ex)
 {
