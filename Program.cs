@@ -138,6 +138,15 @@ try
         Console.WriteLine($"{option.Label} {option.Value}");
     }
 
+    var criteria = new WegFilterCriteria
+    {
+        DomainVariable = selectedDomainVariable,
+        WeaponSystemTypeVariable = weaponSystemDropdown.First().Value
+    };
+
+    Console.WriteLine("\nCriteria:");
+    Console.WriteLine($"Domain: {criteria.DomainVariable}");
+    Console.WriteLine($"Weapon System: {criteria.WeaponSystemTypeVariable}");
 }
 catch (Exception ex)
 {
