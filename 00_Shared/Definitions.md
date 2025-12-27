@@ -1,8 +1,10 @@
 ﻿This file exists to document definitions.
 
-##Class Types (C#)
+---
 
-###Regular Class
+## Class Types (C#)
+
+### Regular Class
 A standard class that can be instantiated and inherited.
 
 - Can contain fields, properties, methods, constructors
@@ -14,305 +16,342 @@ public class UserService
     public void Execute() { }
 }
 
-###SEALED CLASS
+Sealed Class
+
 A class that cannot be inherited.
 
-- Prevents other classes from deriving from it
-- Common for DTOs and configuration classes
-- Can improve performance slightly
+    Prevents other classes from deriving from it
 
-```csharp
+    Common for DTOs and configuration classes
+
+    Can improve performance slightly
+
 public sealed class OdinSettingsDTO
 {
     public string? GraphQLEndPoint { get; set; }
 }
 
-###ABSTRACT CLASS
+Abstract Class
+
 A class that cannot be instantiated directly.
 
-- Intended to be inherited
-- Can contain abstract members (no implementation)
-- Can contain concrete members
+    Intended to be inherited
 
-```csharp
+    Can contain abstract members (no implementation)
+
+    Can contain concrete members
+
 public abstract class BaseService
 {
     public abstract void Run();
 }
 
-###STATIC CLASS
+Static Class
+
 A class that cannot be instantiated or inherited.
 
-- Contains only static members
-- Used for utility or helper functionality
+    Contains only static members
 
-```csharp
+    Used for utility or helper functionality
+
 public static class ConfigurationHelpers
 {
     public static void Validate() { }
 }
 
-###PARTIAL CLASS
+Partial Class
+
 A class whose definition is split across multiple files.
 
-- All parts combined at compile time
-- Common with code generation
+    All parts combined at compile time
 
-```csharp
+    Common with code generation
+
 public partial class UserModel
 {
     public string Name { get; set; }
 }
 
-###GENERIC CLASS
+Generic Class
+
 A class defined with type parameters.
 
-- Allows reuse with different data types
-- Enforced at compile time
+    Allows reuse with different data types
 
-```csharp
+    Enforced at compile time
+
 public class Repository<T>
 {
     public T Get() => default!;
 }
 
-###RECORD CLASS
+Record Class
+
 A reference type optimized for immutable data.
 
-- Value-based equality
-- Common for DTOs and data models
+    Value-based equality
 
-```csharp
+    Common for DTOs and data models
+
 public record UserRecord(string Name, int Id);
 
-###NESTED CLASS
+Nested Class
+
 A class declared inside another class.
 
-- Scope limited to containing class
-- Used for logical grouping
+    Scope limited to containing class
 
-```csharp
+    Used for logical grouping
+
 public class Outer
 {
     public class Inner { }
 }
 
-    ####INHERITANCE
-    A relationship where one class derives from another class.
+Object-Oriented Relationships (C#)
+Inheritance
 
-    - Used to extend or specialize behavior
-    - Child class automatically has access to accessible members of the base class
-    - Established at compile time
-    - Expresses an “is-a” relationship
+A relationship where one class derives from another class.
 
-    ```csharp
-    Syntax:
-    public class DerivedClass : BaseClass { }
+    Used to extend or specialize behavior
 
-    Example:
-    public class BaseService
-    {
-        public void Log() { }
-    }
+    Child class automatically has access to accessible members of the base class
 
-    public class UserService : BaseService
-    {
-        public void Execute() { }
-    }
+    Established at compile time
 
+    Expresses an “is-a” relationship
 
-    ####INSTANTIATION
-    The act of creating a runtime instance of a class.
+public class BaseService
+{
+    public void Log() { }
+}
 
-    - Allocates memory for the object
-    - Calls the constructor
-    - Happens at runtime
-    - Produces an object that can be used
-    
-    ```csharp
-    Syntax:
-    var obj = new ClassName();
+public class UserService : BaseService
+{
+    public void Execute() { }
+}
 
-    Example:
-    var service = new UserService();
+Object Lifecycle (C#)
+Instantiation
 
-    ####PROPERTY
-    A named member of a class that exposes a value through accessors.
+The act of creating a runtime instance of a class.
 
-    - Has a type
-    - Has a name
-    - Has one or more accessors (get, set)
-    - Commonly used for configuration and data models
+    Allocates memory for the object
 
-    ```csharp
-    Example:
-    public string? ForceStructureAPI { get; set; }
+    Calls the constructor
 
-    ####FIELD
-    A variable declared directly inside a class.
+    Happens at runtime
 
-    - Stores data directly
-    - Typically private
-    - Less flexible than properties
-    - Has a type
-    - Has a name
+    Produces an object that can be used
 
-    ```csharp
-    Example:
-    private string _baseUrl;
+var service = new UserService();
 
-    ####METHOD
-    A block of code inside a class that performs an action.
+Object (Instance)
 
-    - Contains executable logic
-    - Can accept parameters
-    - Can return a value or void
-
-    Structure
-    - Return Type
-    - Method Name
-    - Parameters
-
-    ```csharp
-    Example:
-    public void LoadConfiguration() { }
-
-    ####CONSTRUCTOR
-    A special method used to create and initialize an object.
-
-    - Same name as the class
-    - Runs when new is called
-    - No return type
-
-    ```csharp
-    Example:
-    public OdinSettings() { }
-
-
-###OBJECT (INSTANCE)
 A runtime instance of a class.
 
-- Created using new
-- Exists in memory at runtime
+    Created using new
 
-```csharp
+    Exists in memory at runtime
+
 var settings = new OdinSettings();
 
-##TYPE
+Class Members (C#)
+Property
+
+A named member of a class that exposes a value through accessors.
+
+    Has a type
+
+    Has a name
+
+    Has one or more accessors (get, set)
+
+    Commonly used for configuration and data models
+
+public string? ForceStructureAPI { get; set; }
+
+Field
+
+A variable declared directly inside a class.
+
+    Stores data directly
+
+    Typically private
+
+    Less flexible than properties
+
+    Has a type
+
+    Has a name
+
+private string _baseUrl;
+
+Method
+
+A block of code inside a class that performs an action.
+
+    Contains executable logic
+
+    Can accept parameters
+
+    Can return a value or void
+
+public void LoadConfiguration() { }
+
+Constructor
+
+A special method used to create and initialize an object.
+
+    Same name as the class
+
+    Runs when new is called
+
+    No return type
+
+public OdinSettings() { }
+
+Type System (C#)
+Type
+
 Defines what kind of data a variable, property, or parameter can hold.
 
-- Determines valid operations
-- Enforced at compile time
+    Determines valid operations
 
-    REFERENCE TYPE
-    - Stored on the heap
-    - Passed by reference
+    Enforced at compile time
 
-    Examples:
-    class
-    string
+Reference Type
 
-    VALUE TYPE
-    - Copied by value
-    - Stored directly
+    Stored on the heap
 
-    Examples:
-    int
-    bool
-    struct
+    Passed by reference
 
-    NULLABLE
-    Indicates a value may be null.
+Examples:
 
-    - Used with reference types
-    - Important for configuration binding
+class
+string
 
-    Example:
-    string?
+Value Type
 
+    Copied by value
 
-NULL
+    Stored directly
+
+Examples:
+
+int
+bool
+struct
+
+Nullable
+
+Indicates a value may be null.
+
+    Used with reference types
+
+    Important for configuration binding
+
+string?
+
+Null
+
 Represents the absence of a value.
 
-- Valid state unless explicitly prevented
-- Must be checked before use
+    Valid state unless explicitly prevented
 
-Example:
+    Must be checked before use
+
 if (value == null)
+{
+}
 
+Encapsulation and Visibility (C#)
+Access Modifiers
 
-ACCESS MODIFIERS
 Control visibility of classes and members.
 
-- public    → Accessible from anywhere
-- private   → Accessible only within the containing class
-- internal  → Accessible within the same assembly
+    public — Accessible from anywhere
 
+    private — Accessible only within the containing class
 
-NAMESPACE
+    internal — Accessible within the same assembly
+
+Program Structure (.NET)
+Namespace
+
 A logical grouping of related classes.
 
-- Prevents name collisions
-- Organizes code
+    Prevents name collisions
 
-Example:
+    Organizes code
+
 namespace OdinProjectAPI;
 
+Program
 
-PROGRAM
 The entry point of a .NET application.
 
-- Execution starts here
-- Typically located in Program.cs
+    Execution starts here
 
+    Typically located in Program.cs
 
-CONFIGURATION
+Application Configuration (.NET)
+Configuration
+
 A system for supplying values to an application at runtime.
 
-- External to compiled code
-- Environment-specific
+    External to compiled code
 
-    CONFIGURATION BINDING
-    Maps configuration values to C# objects by convention.
+    Environment-specific
 
-    - Property name ↔ configuration key
-    - Class structure ↔ JSON structure
+Configuration Binding
 
+Maps configuration values to C# objects by convention.
 
+    Property name ↔ configuration key
+
+    Class structure ↔ JSON structure
+
+Data and Integration Concepts
 JSON
+
 A text-based data format for structured data.
 
-- Uses key–value pairs
-- Human-readable
+    Uses key–value pairs
 
-Example:
+    Human-readable
+
 {
   "Odin": {
     "GraphQLEndPoint": "..."
   }
 }
 
+DTO (Data Transfer Object)
 
-DTO (DATA TRANSFER OBJECT)
 A class used only to carry data.
 
-- Properties only
-- No behavior
-- Common for configuration and API responses
+    Properties only
 
-Example:
+    No behavior
+
+    Common for configuration and API responses
+
 public class OdinSettingsDto
 {
     public string? GraphQLEndPoint { get; set; }
     public string? OutputFolder { get; set; }
 }
 
-API (APPLICATION PROGRAMMING INTERFACE)
+API (Application Programming Interface)
+
 A defined contract that allows software systems to communicate.
 
-- Exposes data and functionality
-- Accessed via HTTP requests
-- Returns structured responses (JSON)
+    Exposes data and functionality
+
+    Accessed via HTTP requests
+
+    Returns structured responses (JSON)
 
 
 ODIN FORCE STRUCTURE API (NON-STANDARD / ODIN-SPECIFIC)
