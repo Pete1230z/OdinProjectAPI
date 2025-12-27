@@ -4,11 +4,11 @@ using System.Text.Json.Serialization;
 
 namespace OdinProjectAPI.WegSubnav;
 
-public sealed class WegCardQueryService
+public sealed class WegCardQueryRepository
 {
-    private readonly GraphQLClient _client;
+    private readonly GraphQLTransportClient _client;
 
-    public WegCardQueryService(GraphQLClient client) 
+    public WegCardQueryRepository(GraphQLTransportClient client) 
     {
         _client = client;
     }

@@ -9,7 +9,7 @@ using System.Text.Json;
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
 namespace OdinProjectAPI.GraphQL;
 
-public sealed class WebImageService
+public sealed class WegImageParser
 {
     private const string OdinBaseUrl = "https://odin.tradoc.army.mil";
 

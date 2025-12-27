@@ -21,7 +21,7 @@ using System.Text.Json;
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
 namespace OdinProjectAPI.GraphQL;
 
-public sealed class GraphQLClient
+public sealed class GraphQLTransportClient
 {
     // SECTION 1: DEPENDENCIES / STATE
 
@@ -37,7 +37,7 @@ public sealed class GraphQLClient
     // SECTION 2: CONSTRUCTION / SETUP
 
     //Constructor: runs when a new GraphQLClient is created
-    public GraphQLClient(HttpClient http, string endpoint)
+    public GraphQLTransportClient(HttpClient http, string endpoint)
     {
         //Assigns incoming HttpClient to the private field
         _http = http;

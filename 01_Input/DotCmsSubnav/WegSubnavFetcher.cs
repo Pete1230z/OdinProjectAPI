@@ -7,7 +7,7 @@ namespace OdinProjectAPI.WegSubnav;
 
 /*One-off utility used to retrieve and inspect the raw WEG category tree from the ODIN DotCMS subnavigation endpoint.*/
 //Docs on Static Classes: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members
-public static class WegSubnavStructure
+public static class WegSubnavFetcher
 {
 
     //Downloads the WEG subnav JSON, prints basic diagnostics

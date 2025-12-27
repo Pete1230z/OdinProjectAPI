@@ -64,7 +64,7 @@ try
     //Documentation https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-10.0
     using var http = new HttpClient();
 
-    var client = new GraphQLClient(http, settings.Odin.GraphQLEndPoint);
+    var client = new GraphQLTransportClient(http, settings.Odin.GraphQLEndPoint);
 
     // This is written in the GraphQL query language, not C#.
     // "__typename" is a special built-in GraphQL field that tells us
@@ -96,7 +96,7 @@ try
     // GraphQLResponse<TypenameData> represents: { "data": { "__typename": "Query" } }
     var wegParsed = JsonSerializer.Deserialize<GraphQLResponse<WegCardCollectionData>>(result);
 
-    var imageService = new WebImageService();
+    var imageService = new WegImageParser();
 
     var item = wegParsed?.Data?.WegCardCollection?.FirstOrDefault();
 
@@ -111,19 +111,19 @@ try
     Console.WriteLine($"First Image Url: {firstImageUrl}");
     Console.WriteLine($"Downloaded {bytes.Length} bytes");
 
-    await WegSubnavStructure.WegSubnavAsync();
-    await WegSubnavStructure.InspectParsedAsync();
-    await WegSubnavStructure.BuildAndCacheNormalizedTreeAsync();
+    await WEGSubnavFetcher.WegSubnavAsync();
+    await WEGSubnavFetcher.InspectParsedAsync();
+    await WEGSubnavFetcher.BuildAndCacheNormalizedTreeAsync();
 
     //Testing dropdowns
-    var cache = await WegCategoryCacheReader.LoadAsync();
+    var cache = await WegCategoryRepository.LoadAsync();
 
     var root = cache.RootNodes[0];
 
-    var domainNode = WegCategoryCacheReader.FindByVariable(root, "domain")
+    var domainNode = WegCategoryRepository.FindByVariable(root, "domain")
         ?? throw new Exception("Domain node not found.");
 
-    var domainDropdown  = WegCategoryCacheReader.ToDropdownOptions(domainNode);
+    var domainDropdown  = WegCategoryRepository.ToDropdownOptions(domainNode);
 
     Console.WriteLine("Domain Dropdown:");
     foreach (var option in domainDropdown)
@@ -133,9 +133,9 @@ try
 
     var selectedDomainVariable = domainDropdown.First(o => o.Label == "Land").Value;
 
-    var selectedDomainNode = WegCategoryCacheReader.FindByVariable(root, selectedDomainVariable) ?? throw new InvalidOperationException("Selected domain not found.");
+    var selectedDomainNode = WegCategoryRepository.FindByVariable(root, selectedDomainVariable) ?? throw new InvalidOperationException("Selected domain not found.");
 
-    var weaponSystemDropdown = WegCategoryCacheReader.ToDropdownOptions(selectedDomainNode);
+    var weaponSystemDropdown = WegCategoryRepository.ToDropdownOptions(selectedDomainNode);
 
     Console.WriteLine("\nWeapon System Types (Land):");
     foreach (var option in weaponSystemDropdown)
@@ -156,7 +156,7 @@ try
     var lucene = LuceneQueryBuilder.Build(criteria);
     Console.WriteLine($"\nLucene Query:\n{lucene}");
 
-    var wegCardService = new WegCardQueryService(client);
+    var wegCardService = new WegCardQueryRepository(client);
 
     var cards = await wegCardService.GetWegCardsAsync(lucene, limit: 5);
 

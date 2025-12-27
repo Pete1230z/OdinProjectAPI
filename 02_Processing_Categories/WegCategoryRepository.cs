@@ -3,7 +3,7 @@
 namespace OdinProjectAPI.WegSubnav;
 
 //Docs on Static Classes: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members
-public static class WegCategoryCacheReader
+public static class WegCategoryRepository
 {
     // Loads the normalized WEG category cache from disk and converts it
     // back into strongly-typed objects the application can work with.
