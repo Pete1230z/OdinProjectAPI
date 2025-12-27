@@ -17,7 +17,7 @@ public class UserService
 } 
 ```
 
-Sealed Class
+### Sealed Class
 
 A class that cannot be inherited.
 
@@ -27,12 +27,14 @@ A class that cannot be inherited.
 
     Can improve performance slightly
 
+```csharp
 public sealed class OdinSettingsDTO
 {
     public string? GraphQLEndPoint { get; set; }
 }
+```
 
-Abstract Class
+### Abstract Class
 
 A class that cannot be instantiated directly.
 
@@ -42,12 +44,14 @@ A class that cannot be instantiated directly.
 
     Can contain concrete members
 
+```csharp
 public abstract class BaseService
 {
     public abstract void Run();
 }
+```
 
-Static Class
+### Static Class
 
 A class that cannot be instantiated or inherited.
 
@@ -55,12 +59,14 @@ A class that cannot be instantiated or inherited.
 
     Used for utility or helper functionality
 
+```csharp
 public static class ConfigurationHelpers
 {
     public static void Validate() { }
 }
+```
 
-Partial Class
+###Partial Class
 
 A class whose definition is split across multiple files.
 
@@ -68,12 +74,14 @@ A class whose definition is split across multiple files.
 
     Common with code generation
 
+```csharp
 public partial class UserModel
 {
     public string Name { get; set; }
 }
+```
 
-Generic Class
+### Generic Class
 
 A class defined with type parameters.
 
@@ -81,12 +89,14 @@ A class defined with type parameters.
 
     Enforced at compile time
 
+```csharp
 public class Repository<T>
 {
     public T Get() => default!;
 }
+```
 
-Record Class
+### Record Class
 
 A reference type optimized for immutable data.
 
@@ -94,9 +104,11 @@ A reference type optimized for immutable data.
 
     Common for DTOs and data models
 
+```csharp
 public record UserRecord(string Name, int Id);
+```
 
-Nested Class
+### Nested Class
 
 A class declared inside another class.
 
@@ -104,13 +116,17 @@ A class declared inside another class.
 
     Used for logical grouping
 
+```csharp
 public class Outer
 {
     public class Inner { }
 }
+```
+---
 
-Object-Oriented Relationships (C#)
-Inheritance
+## Object-Oriented Relationships (C#)
+
+### Inheritance
 
 A relationship where one class derives from another class.
 
@@ -122,6 +138,7 @@ A relationship where one class derives from another class.
 
     Expresses an “is-a” relationship
 
+```csharp
 public class BaseService
 {
     public void Log() { }
@@ -131,9 +148,13 @@ public class UserService : BaseService
 {
     public void Execute() { }
 }
+```
 
-Object Lifecycle (C#)
-Instantiation
+---
+
+## Object Lifecycle (C#)
+
+### Instantiation
 
 The act of creating a runtime instance of a class.
 
@@ -145,9 +166,11 @@ The act of creating a runtime instance of a class.
 
     Produces an object that can be used
 
+```csharp
 var service = new UserService();
+'''
 
-Object (Instance)
+### Object (Instance)
 
 A runtime instance of a class.
 
@@ -155,10 +178,14 @@ A runtime instance of a class.
 
     Exists in memory at runtime
 
+```csharp
 var settings = new OdinSettings();
+```
+---
 
-Class Members (C#)
-Property
+## Class Members (C#)
+
+### Property
 
 A named member of a class that exposes a value through accessors.
 
@@ -170,9 +197,11 @@ A named member of a class that exposes a value through accessors.
 
     Commonly used for configuration and data models
 
+```csharp
 public string? ForceStructureAPI { get; set; }
+```
 
-Field
+### Field
 
 A variable declared directly inside a class.
 
@@ -186,9 +215,11 @@ A variable declared directly inside a class.
 
     Has a name
 
+```csharp
 private string _baseUrl;
+```
 
-Method
+### Method
 
 A block of code inside a class that performs an action.
 
@@ -198,9 +229,11 @@ A block of code inside a class that performs an action.
 
     Can return a value or void
 
+```csharp
 public void LoadConfiguration() { }
+```
 
-Constructor
+### Constructor
 
 A special method used to create and initialize an object.
 
@@ -210,10 +243,14 @@ A special method used to create and initialize an object.
 
     No return type
 
+```csharp
 public OdinSettings() { }
+```
+---
 
-Type System (C#)
-Type
+## Type System (C#)
+
+### Type
 
 Defines what kind of data a variable, property, or parameter can hold.
 
@@ -221,7 +258,7 @@ Defines what kind of data a variable, property, or parameter can hold.
 
     Enforced at compile time
 
-Reference Type
+#### Reference Type
 
     Stored on the heap
 
@@ -232,7 +269,7 @@ Examples:
 class
 string
 
-Value Type
+#### Value Type
 
     Copied by value
 
@@ -244,7 +281,7 @@ int
 bool
 struct
 
-Nullable
+### Nullable
 
 Indicates a value may be null.
 
@@ -262,12 +299,16 @@ Represents the absence of a value.
 
     Must be checked before use
 
+```csharp
 if (value == null)
 {
 }
+```
+---
 
-Encapsulation and Visibility (C#)
-Access Modifiers
+## Encapsulation and Visibility (C#)
+
+### Access Modifiers
 
 Control visibility of classes and members.
 
@@ -277,8 +318,9 @@ Control visibility of classes and members.
 
     internal — Accessible within the same assembly
 
-Program Structure (.NET)
-Namespace
+## Program Structure (.NET)
+
+### Namespace
 
 A logical grouping of related classes.
 
@@ -286,9 +328,11 @@ A logical grouping of related classes.
 
     Organizes code
 
+```csharp
 namespace OdinProjectAPI;
+```
 
-Program
+### Program
 
 The entry point of a .NET application.
 
@@ -296,8 +340,9 @@ The entry point of a .NET application.
 
     Typically located in Program.cs
 
-Application Configuration (.NET)
-Configuration
+## Application Configuration (.NET)
+
+### Configuration
 
 A system for supplying values to an application at runtime.
 
@@ -305,7 +350,7 @@ A system for supplying values to an application at runtime.
 
     Environment-specific
 
-Configuration Binding
+### Configuration Binding
 
 Maps configuration values to C# objects by convention.
 
@@ -313,8 +358,9 @@ Maps configuration values to C# objects by convention.
 
     Class structure ↔ JSON structure
 
-Data and Integration Concepts
-JSON
+## Data and Integration Concepts
+
+### JSON
 
 A text-based data format for structured data.
 
@@ -322,13 +368,15 @@ A text-based data format for structured data.
 
     Human-readable
 
+```json
 {
   "Odin": {
     "GraphQLEndPoint": "..."
   }
 }
+```json
 
-DTO (Data Transfer Object)
+### DTO (Data Transfer Object)
 
 A class used only to carry data.
 
@@ -338,13 +386,15 @@ A class used only to carry data.
 
     Common for configuration and API responses
 
+```csharp
 public class OdinSettingsDto
 {
     public string? GraphQLEndPoint { get; set; }
     public string? OutputFolder { get; set; }
 }
+```
 
-API (Application Programming Interface)
+## API (Application Programming Interface)
 
 A defined contract that allows software systems to communicate.
 
