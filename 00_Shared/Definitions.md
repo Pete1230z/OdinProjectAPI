@@ -14,7 +14,8 @@ A standard class that can be instantiated and inherited.
 public class UserService
 {
     public void Execute() { }
-} ```
+} 
+```
 
 Sealed Class
 
