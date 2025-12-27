@@ -43,7 +43,7 @@ and extensible.
 **Role:** Application entry point and orchestration
 
 - Loads and validates configuration
-- Initializes shared services (`HttpClient`, `GraphQLClient`)
+- Initializes shared services (`HttpClient`, `GraphQLTransportClient`)
 - Executes the application pipeline in order
 - Prints console output for validation and debugging
 
@@ -59,9 +59,14 @@ It coordinates calls to the other components.
 - Provides strongly-typed access to ODIN endpoints and output settings
 - Consumed during application startup
 
+**Primary file:**
+- `AppSettingsModels.cs`
+
 ---
 
-### GraphQLClient.cs
+## GraphQL Pipeline (ODIN Content API)
+
+### GraphQLTransportClient.cs
 **Role:** Low-level GraphQL transport
 
 - Executes GraphQL-over-HTTP requests against ODIN
@@ -73,19 +78,21 @@ All GraphQL execution flows through this class.
 
 ---
 
-### GraphQL DTOs (`GraphQLResponse`, `WegCardItem`, etc.)
-**Role:** GraphQL response modeling
+### GraphQLRawDTOs.cs
+**Role:** GraphQL response modeling (raw transport DTOs)
 
 - Define how ODIN GraphQL responses are deserialized
 - Mirror the GraphQL response shape
 - Contain no business logic
 
-These DTOs are consumed by query services and `Program.cs`.
+These DTOs are consumed by query repositories and `Program.cs`.
 
 ---
 
-### WebImageService.cs
-**Role:** Image JSON handling
+## WEG Image Handling
+
+### WegImageParser.cs
+**Role:** Image JSON parsing and URL construction
 
 - Parses the `images` field returned by WEG cards (JSON string)
 - Converts relative image paths into absolute URLs
@@ -95,7 +102,7 @@ These DTOs are consumed by query services and `Program.cs`.
 
 ## WEG Subnavigation Pipeline (DotCMS)
 
-### WegSubnavStructure.cs
+### WegSubnavFetcher.cs
 **Role:** DotCMS WEG category ingestion and caching
 
 - Fetches the WEG subnavigation tree from DotCMS
@@ -107,8 +114,8 @@ This is the source of all dropdown reference data.
 
 ---
 
-### WEG Subnav DTOs
-**Role:** Raw DotCMS modeling
+### WegSubnavRawDTOs.cs
+**Role:** Raw DotCMS modeling (subnav response DTOs)
 
 - Mirror the exact structure returned by the DotCMS subnav endpoint
 - Used only during inspection and normalization
@@ -117,6 +124,8 @@ This is the source of all dropdown reference data.
 These exist solely to deserialize the raw reference data.
 
 ---
+
+## Category Processing (Normalized Models)
 
 ### WegCategoryNormalizer.cs
 **Role:** Raw → normalized transformation
@@ -138,8 +147,8 @@ These models are safe to use throughout the application.
 
 ---
 
-### WegCategoryCacheReader.cs
-**Role:** Cached category access
+### WegCategoryRepository.cs
+**Role:** Cached category access and tree navigation
 
 - Loads the normalized category cache from disk
 - Finds nodes by category variable
@@ -148,6 +157,8 @@ These models are safe to use throughout the application.
 This bridges cached reference data to user selection logic.
 
 ---
+
+## Filtering and Querying (WEG Cards)
 
 ### WegFilterCriteria.cs
 **Role:** Filter selection contract
@@ -170,8 +181,8 @@ The generated query feeds directly into GraphQL requests.
 
 ---
 
-### WegCardQueryService.cs
-**Role:** Filtered WEG card retrieval
+### WegCardQueryRepository.cs
+**Role:** Filtered WEG card retrieval (query boundary)
 
 - Executes GraphQL queries using Lucene filters
 - Deserializes results into strongly-typed `WegCardItem` lists
