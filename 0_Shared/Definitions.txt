@@ -420,7 +420,6 @@ Important Characteristics:
 GraphQL Playground:
 https://www.graphqlbin.com/v2/new
 
-
 CONTENT TYPE
 A schema definition that describes a type of content stored in dotCMS.
 
