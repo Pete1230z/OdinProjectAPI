@@ -9,9 +9,10 @@
 
 using Microsoft.Extensions.Configuration;
 using OdinProjectAPI.Configuration;
-using System.Text.Json;
 using OdinProjectAPI.GraphQL;
 using OdinProjectAPI.WegSubnav;
+using System.Collections.Generic;
+using System.Text.Json;
 
 try
     //PHASE 1: LOAD AND VALIDATE CONFIGURATION
@@ -76,11 +77,15 @@ try
       }
     }";
 
+    var variables = new
+    {
+        limit = 10
+    };
 
     // - ExecuteRawAsync sends the query to the server
     // - await pauses execution until the HTTP response is received
     // - result will contain the raw JSON response as a string
-    var result = await client.ExecuteRawAsync(query);
+    var result = await client.ExecuteRawAsync(query, variables);
 
     Console.WriteLine("GraphQL Response");
     Console.WriteLine(result);
@@ -150,6 +155,24 @@ try
 
     var lucene = LuceneQueryBuilder.Build(criteria);
     Console.WriteLine($"\nLucene Query:\n{lucene}");
+
+    var wegCardService = new WegCardQueryService(client);
+
+    var cards = await wegCardService.GetWegCardsAsync(lucene, limit: 5);
+
+    Console.WriteLine($"\nFiltered results returned: {cards.Count}");
+
+    foreach (var card in cards)
+    {
+        Console.WriteLine($"Name: {card.Name}");
+
+        if (card.Origin != null && card.Origin.Count > 0)
+        {
+            Console.WriteLine($"Origin: {string.Join(", ", card.Origin.Select(o => o.Name))}");
+        }
+    }
+
+
 }
 catch (Exception ex)
 {

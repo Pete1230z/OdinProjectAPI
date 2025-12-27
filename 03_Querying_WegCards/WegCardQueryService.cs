@@ -1,0 +1,39 @@
+﻿using OdinProjectAPI.GraphQL;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace OdinProjectAPI.WegSubnav;
+
+public sealed class WegCardQueryService
+{
+    private readonly GraphQLClient _client;
+
+    public WegCardQueryService(GraphQLClient client) 
+    {
+        _client = client;
+    }
+
+    public async Task<List<WegCardItem>> GetWegCardsAsync(string LuceneQuery, int limit = 10)
+    {
+        var gql = @"
+        query WegCards($query: String!, $limit: Int!) {
+          wegCardCollection(query: $query, limit: $limit, offset: 0) {
+              name
+              dateOfIntroduction
+              origin { name }
+            }
+        }";
+
+        var variables = new
+        {
+            query = LuceneQuery,
+            limit
+        };
+
+        var rawJson = await _client.ExecuteRawAsync(gql, variables);
+
+        var parsed = JsonSerializer.Deserialize<GraphQLResponse<WegCardCollectionData>>(rawJson, new JsonSerializerOptions {  PropertyNameCaseInsensitive = true});
+
+        return parsed?.Data?.WegCardCollection ?? new List<WegCardItem>();
+    }
+}

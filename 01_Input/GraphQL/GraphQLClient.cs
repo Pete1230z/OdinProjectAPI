@@ -49,13 +49,13 @@ public sealed class GraphQLClient
     // SECTION 3: EXECUTE GRAPHQL REQUEST
 
     // Sends a GraphQL query to the server and returns the raw JSON response.
-    public async Task<string> ExecuteRawAsync(string query)
+    public async Task<string> ExecuteRawAsync(string query, object variables)
     {
         // 3A: BUILD GRAPHQL REQUEST BODY
 
         // Create an object that matches the GraphQL HTTP payload shape:
         // { "query": "<graphql query string>" }
-        var payload = new {query};
+        var payload = new {query, variables};
 
         // 3B: SERIALIZE PAYLOAD TO JSON
 

@@ -11,18 +11,22 @@ public static class LuceneQueryBuilder
 
         // Collect clauses in a fixed order so the output is deterministic.
         // Deterministic = same criteria -> same query string every time.
-        var clauses = new List<string>();
+        var clauses = new List<string>
+        {
+            //Required based on the Odin documentation
+            "+contentType:WegCard"
+        };
 
         //Domain category filter
         if (!string.IsNullOrWhiteSpace(criteria.DomainVariable))
         {
-            clauses.Add(BuildCategoryClause(criteria.DomainVariable));
+            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.DomainVariable.Trim())}");
         }
 
         //Weapon system category fields
         if (!string.IsNullOrWhiteSpace(criteria.WeaponSystemTypeVariable))
         {
-            clauses.Add(BuildCategoryClause(criteria.WeaponSystemTypeVariable));
+            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.WeaponSystemTypeVariable.Trim())}");
         }
 
         // Later: Origin
@@ -32,16 +36,7 @@ public static class LuceneQueryBuilder
         // if (criteria.IntroYearFrom.HasValue || criteria.IntroYearTo.HasValue) { ... }
 
         //If nothing selected, return ":" to match everything.
-        return clauses.Count == 0 ? "*:*" : string.Join(" AND ", clauses);
-    }
-
-    private static string BuildCategoryClause(string variable)
-    {
-        var v = EscapeLuceneTerm(variable.Trim());
-
-        // Placeholder field name: change once you confirm the correct Lucene field for categories.
-        // Common patterns are "categories" or similar.
-        return $"categories:\"{v}\"";
+        return string.Join(" ", clauses);
     }
 
     // Escapes characters that would break a Lucene query.
