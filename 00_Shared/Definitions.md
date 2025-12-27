@@ -1,19 +1,18 @@
 ﻿This file exists to document definitions.
 
-CLASS TYPES (C#)
+## Class Types (C#)
 
-REGULAR CLASS
+### Regular Class
 A standard class that can be instantiated and inherited.
 
 - Can contain fields, properties, methods, constructors
-- Can be inherited unless marked sealed
+- Can be inherited unless marked `sealed`
 
-Example:
+```csharp
 public class UserService
 {
     public void Execute() { }
 }
-
 
 SEALED CLASS
 A class that cannot be inherited.
