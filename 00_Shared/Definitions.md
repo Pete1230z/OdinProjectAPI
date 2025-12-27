@@ -66,7 +66,7 @@ public static class ConfigurationHelpers
 }
 ```
 
-###Partial Class
+### Partial Class
 
 A class whose definition is split across multiple files.
 
@@ -168,7 +168,7 @@ The act of creating a runtime instance of a class.
 
 ```csharp
 var service = new UserService();
-'''
+```
 
 ### Object (Instance)
 
@@ -291,7 +291,7 @@ Indicates a value may be null.
 
 string?
 
-Null
+### Null
 
 Represents the absence of a value.
 
@@ -374,7 +374,7 @@ A text-based data format for structured data.
     "GraphQLEndPoint": "..."
   }
 }
-```json
+```
 
 ### DTO (Data Transfer Object)
 
