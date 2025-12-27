@@ -1,14 +1,14 @@
 ﻿This file exists to document definitions.
 
-## Class Types (C#)
+```csharp
+Class Types (C#)
 
-### Regular Class
+Regular Class
 A standard class that can be instantiated and inherited.
 
 - Can contain fields, properties, methods, constructors
 - Can be inherited unless marked `sealed`
 
-```csharp
 public class UserService
 {
     public void Execute() { }
