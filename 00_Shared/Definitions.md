@@ -1,109 +1,103 @@
 ﻿This file exists to document definitions.
 
-```csharp
-Class Types (C#)
+##Class Types (C#)
 
-Regular Class
+###Regular Class
 A standard class that can be instantiated and inherited.
 
 - Can contain fields, properties, methods, constructors
 - Can be inherited unless marked `sealed`
 
+```csharp
 public class UserService
 {
     public void Execute() { }
 }
 
-SEALED CLASS
+###SEALED CLASS
 A class that cannot be inherited.
 
 - Prevents other classes from deriving from it
 - Common for DTOs and configuration classes
 - Can improve performance slightly
 
-Example:
+```csharp
 public sealed class OdinSettingsDTO
 {
     public string? GraphQLEndPoint { get; set; }
 }
 
-
-ABSTRACT CLASS
+###ABSTRACT CLASS
 A class that cannot be instantiated directly.
 
 - Intended to be inherited
 - Can contain abstract members (no implementation)
 - Can contain concrete members
 
-Example:
+```csharp
 public abstract class BaseService
 {
     public abstract void Run();
 }
 
-
-STATIC CLASS
+###STATIC CLASS
 A class that cannot be instantiated or inherited.
 
 - Contains only static members
 - Used for utility or helper functionality
 
-Example:
+```csharp
 public static class ConfigurationHelpers
 {
     public static void Validate() { }
 }
 
-
-PARTIAL CLASS
+###PARTIAL CLASS
 A class whose definition is split across multiple files.
 
 - All parts combined at compile time
 - Common with code generation
 
-Example:
+```csharp
 public partial class UserModel
 {
     public string Name { get; set; }
 }
 
-
-GENERIC CLASS
+###GENERIC CLASS
 A class defined with type parameters.
 
 - Allows reuse with different data types
 - Enforced at compile time
 
-Example:
+```csharp
 public class Repository<T>
 {
     public T Get() => default!;
 }
 
-
-RECORD CLASS
+###RECORD CLASS
 A reference type optimized for immutable data.
 
 - Value-based equality
 - Common for DTOs and data models
 
-Example:
+```csharp
 public record UserRecord(string Name, int Id);
 
-
-NESTED CLASS
+###NESTED CLASS
 A class declared inside another class.
 
 - Scope limited to containing class
 - Used for logical grouping
 
-Example:
+```csharp
 public class Outer
 {
     public class Inner { }
 }
 
-    INHERITANCE
+    ####INHERITANCE
     A relationship where one class derives from another class.
 
     - Used to extend or specialize behavior
@@ -111,6 +105,7 @@ public class Outer
     - Established at compile time
     - Expresses an “is-a” relationship
 
+    ```csharp
     Syntax:
     public class DerivedClass : BaseClass { }
 
@@ -126,21 +121,22 @@ public class Outer
     }
 
 
-    INSTANTIATION
+    ####INSTANTIATION
     The act of creating a runtime instance of a class.
 
     - Allocates memory for the object
     - Calls the constructor
     - Happens at runtime
     - Produces an object that can be used
-
+    
+    ```csharp
     Syntax:
     var obj = new ClassName();
 
     Example:
     var service = new UserService();
 
-    PROPERTY
+    ####PROPERTY
     A named member of a class that exposes a value through accessors.
 
     - Has a type
@@ -148,10 +144,11 @@ public class Outer
     - Has one or more accessors (get, set)
     - Commonly used for configuration and data models
 
+    ```csharp
     Example:
     public string? ForceStructureAPI { get; set; }
 
-    FIELD
+    ####FIELD
     A variable declared directly inside a class.
 
     - Stores data directly
@@ -160,10 +157,11 @@ public class Outer
     - Has a type
     - Has a name
 
+    ```csharp
     Example:
     private string _baseUrl;
 
-    METHOD
+    ####METHOD
     A block of code inside a class that performs an action.
 
     - Contains executable logic
@@ -175,31 +173,32 @@ public class Outer
     - Method Name
     - Parameters
 
+    ```csharp
     Example:
     public void LoadConfiguration() { }
 
-    CONSTRUCTOR
+    ####CONSTRUCTOR
     A special method used to create and initialize an object.
 
     - Same name as the class
     - Runs when new is called
     - No return type
 
+    ```csharp
     Example:
     public OdinSettings() { }
 
 
-OBJECT (INSTANCE)
+###OBJECT (INSTANCE)
 A runtime instance of a class.
 
 - Created using new
 - Exists in memory at runtime
 
-Example:
+```csharp
 var settings = new OdinSettings();
 
-
-TYPE
+##TYPE
 Defines what kind of data a variable, property, or parameter can hold.
 
 - Determines valid operations
