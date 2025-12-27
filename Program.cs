@@ -147,6 +147,9 @@ try
     Console.WriteLine("\nCriteria:");
     Console.WriteLine($"Domain: {criteria.DomainVariable}");
     Console.WriteLine($"Weapon System: {criteria.WeaponSystemTypeVariable}");
+
+    var lucene = LuceneQueryBuilder.Build(criteria);
+    Console.WriteLine($"\nLucene Query:\n{lucene}");
 }
 catch (Exception ex)
 {
