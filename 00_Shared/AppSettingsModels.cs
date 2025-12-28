@@ -23,6 +23,7 @@ namespace OdinProjectAPI.Configuration
         //References OdinSettings instead of a general other type such as a string
         //Odin is the property name, which is used as the "lookup" to find the correct JSON object
         public OdinSettingsDTO Odin { get; set; } = new();
+        public WegSettings Weg { get; set; } = new();
         public string? OutputFolder { get; set; }
     }
 }
