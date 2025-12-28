@@ -158,7 +158,9 @@ try
     Console.WriteLine($"Domain: {criteria.DomainVariable}");
     Console.WriteLine($"Weapon System: {criteria.WeaponSystemTypeVariable}");
 
-    var lucene = LuceneQueryBuilder.Build(criteria);
+    criteria.TierKey = "Tier3";
+
+    var lucene = LuceneQueryBuilder.Build(criteria, settings.Weg.Tiers);
     Console.WriteLine($"\nLucene Query:\n{lucene}");
 
     var wegCardService = new WegCardQueryRepository(client);
