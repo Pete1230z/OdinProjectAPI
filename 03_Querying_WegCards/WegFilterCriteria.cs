@@ -9,10 +9,10 @@ public sealed class WegFilterCriteria
     // Example: "infantry-weapons-6965ab"
     public string? WeaponSystemTypeVariable { get; set; }
 
-    // Later: origin filters (from GraphQL), not from DotCMS subnav
+    // Origin filters (from GraphQL), not from DotCMS subnav
     public string? Origin { get; set; }
 
-    // Later: tier range mapped to dateOfIntroduction (Lucene range)
+    // Tier range mapped to dateOfIntroduction (Lucene range)
     public int? IntroYearFrom { get; set; }
     public int? IntroYearTo { get; set; }
 }
