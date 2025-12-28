@@ -13,6 +13,5 @@ public sealed class WegFilterCriteria
     public string? Origin { get; set; }
 
     // Tier range mapped to dateOfIntroduction (Lucene range)
-    public int? IntroYearFrom { get; set; }
-    public int? IntroYearTo { get; set; }
+    public string? TierKey { get; set; }
 }
