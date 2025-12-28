@@ -186,6 +186,13 @@ try
 
     ValidateTiers(settings);
 
+    var tierDropdown = settings.Weg.Tiers.Select(t => new DropdownOption {  Label = t.Label, Value = t.Key}).OrderBy(o => o.Label).ToList();
+
+    foreach (var tier in tierDropdown)
+    {
+        Console.WriteLine($"{tier.Label} {tier.Value}");
+    }
+
 }
 catch (Exception ex)
 {
