@@ -1,10 +1,13 @@
-﻿namespace OdinProjectAPI.WegSubnav;
+﻿using OdinProjectAPI.Configuration;
+using System.Globalization;
+
+namespace OdinProjectAPI.WegSubnav;
 
 //Builds a Lucene query from user selected criteria
 //Docs on Static Classes: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members
 public static class LuceneQueryBuilder
 {
-    public static string Build(WegFilterCriteria criteria)
+    public static string Build(WegFilterCriteria criteria, IReadOnlyList<WegTierDefinition> tiers)
     {
         if (criteria == null)
             throw new ArgumentNullException(nameof(criteria));
@@ -30,15 +33,25 @@ public static class LuceneQueryBuilder
         }
 
         //Origin
-        if (!string.IsNullOrWhiteSpace(criteria.Origin))
+        if (!string.IsNullOrWhiteSpace(criteria.OriginVariable))
         {
-            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.Origin.Trim())}");
+            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.OriginVariable.Trim())}");
         }
 
         //Tier -> dateOfIntroduction range
-        // if (criteria.IntroYearFrom.HasValue || criteria.IntroYearTo.HasValue) { ... }
+        if (!string.IsNullOrWhiteSpace(criteria.TierKey))
+        {
+            var tier = tiers.FirstOrDefault(t => string.Equals(t.Key, criteria.TierKey, StringComparison.OrdinalIgnoreCase));
 
-        //If nothing selected, return ":" to match everything.
+            if (tier == null)
+                throw new InvalidOperationException($"Unknown TierKey: {criteria.TierKey}");
+
+            var fromStr = tier.From.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            var toStr = tier.To.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+
+            clauses.Add($"+WegCard.dateOfIntroduction:[ {fromStr} TO {toStr} ");
+        }
+
         return string.Join(" ", clauses);
     }
 
