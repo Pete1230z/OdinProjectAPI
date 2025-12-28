@@ -29,10 +29,13 @@ public static class LuceneQueryBuilder
             clauses.Add($"+categories: {EscapeLuceneTerm(criteria.WeaponSystemTypeVariable.Trim())}");
         }
 
-        // Later: Origin
-        // if (!string.IsNullOrWhiteSpace(criteria.Origin)) { ... }
+        //Origin
+        if (!string.IsNullOrWhiteSpace(criteria.Origin))
+        {
+            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.Origin.Trim())}");
+        }
 
-        // Later: Tier -> dateOfIntroduction range
+        //Tier -> dateOfIntroduction range
         // if (criteria.IntroYearFrom.HasValue || criteria.IntroYearTo.HasValue) { ... }
 
         //If nothing selected, return ":" to match everything.

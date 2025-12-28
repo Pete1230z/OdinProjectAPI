@@ -258,7 +258,7 @@ Defines what kind of data a variable, property, or parameter can hold.
 
     Enforced at compile time
 
-#### Reference Type
+#### Reference Type: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types
 
     Stored on the heap
 
@@ -269,7 +269,7 @@ Examples:
 class
 string
 
-#### Value Type
+#### Value Type: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types
 
     Copied by value
 

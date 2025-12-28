@@ -23,6 +23,9 @@ try
         3. To build a final IConfiguration object
     */
 {
+    //It builds a key–value tree in memory. So maps the strings in appsettings to their values
+    //Docs Configuration: https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration#basic-example
+    //Docs IConfiguration: https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.iconfiguration?view=net-10.0-pp
     IConfiguration config = new ConfigurationBuilder()
         .SetBasePath(AppContext.BaseDirectory)
         .AddJsonFile(
@@ -30,6 +33,7 @@ try
             optional: false,
             reloadOnChange: true
         )
+        //Docs Build(): https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.configurationbuilder.build?view=net-10.0-pp#microsoft-extensions-configuration-configurationbuilder-build
         .Build();
 
     /*
@@ -37,6 +41,7 @@ try
     Creates an AppSettings object
     Fills in properties by name
     */
+    //Docs .Get: https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.configurationbinder.get?view=net-9.0-pp
     var settings = config.Get<AppSettings>()
         ?? throw new Exception("Failed to bind configuration.");
 
@@ -111,9 +116,9 @@ try
     Console.WriteLine($"First Image Url: {firstImageUrl}");
     Console.WriteLine($"Downloaded {bytes.Length} bytes");
 
-    await WEGSubnavFetcher.WegSubnavAsync();
-    await WEGSubnavFetcher.InspectParsedAsync();
-    await WEGSubnavFetcher.BuildAndCacheNormalizedTreeAsync();
+    await WegSubnavFetcher.WegSubnavAsync();
+    await WegSubnavFetcher.InspectParsedAsync();
+    await WegSubnavFetcher.BuildAndCacheNormalizedTreeAsync();
 
     //Testing dropdowns
     var cache = await WegCategoryRepository.LoadAsync();
@@ -172,6 +177,14 @@ try
         }
     }
 
+    static void ValidateTiers(AppSettings settings)
+    {
+        var tiers = settings.Weg.Tiers;
+
+        Console.WriteLine($"Tier config OK. Loaded {tiers.Count} tiers.");
+    }
+
+    ValidateTiers(settings);
 
 }
 catch (Exception ex)

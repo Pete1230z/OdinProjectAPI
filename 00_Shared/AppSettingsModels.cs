@@ -4,6 +4,21 @@
 
     This file is part of the Configuration layer and is consumed by Program.cs
     during application initialization.
+
+    The property names tell the binder where to look, and then bind it into the property
+    This tells the binder:
+
+    Look for a config section called "Odin"
+
+    Bind it into OdinSettingsDTO
+
+    Look for a section called "Weg"
+
+    Bind it into WegSettings
+
+    Look for "OutputFolder"
+
+    Assign it to the string
 */
 
 namespace OdinProjectAPI.Configuration
@@ -25,8 +40,11 @@ namespace OdinProjectAPI.Configuration
 
     public sealed class WegTierDefinition
     {
+        //Docs Reference Type: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types
         public string Key { get; set; } = "";
         public string Label { get; set; } = "";
+
+        //Docs Value Type: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types
         public DateTime From { get; set; }
         public DateTime To { get; set; }
     }
