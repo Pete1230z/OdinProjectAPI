@@ -18,6 +18,19 @@ namespace OdinProjectAPI.Configuration
 
     }
 
+    public sealed class WegSettings
+    {
+        public List<WegTierDefinition> Tiers { get; set; }
+    }
+
+    public sealed class WegTierDefinition
+    {
+        public string Key { get; set; } = "";
+        public string Label { get; set; } = "";
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+    }
+
     public sealed class AppSettings
     {
         //References OdinSettings instead of a general other type such as a string
