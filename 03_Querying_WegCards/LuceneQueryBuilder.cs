@@ -23,13 +23,13 @@ public static class LuceneQueryBuilder
         //Domain category filter
         if (!string.IsNullOrWhiteSpace(criteria.DomainVariable))
         {
-            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.DomainVariable.Trim())}");
+            clauses.Add($"+categories:{EscapeLuceneTerm(criteria.DomainVariable.Trim())}");
         }
 
         //Weapon system category fields
         if (!string.IsNullOrWhiteSpace(criteria.WeaponSystemTypeVariable))
         {
-            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.WeaponSystemTypeVariable.Trim())}");
+            clauses.Add($"+categories:{EscapeLuceneTerm(criteria.WeaponSystemTypeVariable.Trim())}");
         }
 
         //Origin
@@ -44,8 +44,10 @@ public static class LuceneQueryBuilder
             var tier = tiers.FirstOrDefault(t => string.Equals(t.Key, criteria.TierKey, StringComparison.OrdinalIgnoreCase));
 
             if (tier == null)
+                //Docs Exceptions: https://learn.microsoft.com/en-us/dotnet/standard/exceptions/
                 throw new InvalidOperationException($"Unknown TierKey: {criteria.TierKey}");
 
+            //Docs InvariantCulture: https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.invariantculture?view=net-10.0
             var fromStr = tier.From.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             var toStr = tier.To.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
 
