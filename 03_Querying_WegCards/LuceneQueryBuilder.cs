@@ -51,7 +51,7 @@ public static class LuceneQueryBuilder
             var fromStr = tier.From.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
             var toStr = tier.To.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
 
-            clauses.Add($"+WegCard.dateOfIntroduction:[ {fromStr} TO {toStr} ");
+            clauses.Add($"+WegCard.dateOfIntroduction:[ {fromStr} TO {toStr} ]");
         }
 
         return string.Join(" ", clauses);
