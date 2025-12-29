@@ -403,3 +403,160 @@ A defined contract that allows software systems to communicate.
     Accessed via HTTP requests
 
     Returns structured responses (JSON)
+
+## Common Operators (C#)
+
+### Assignment Operator `=` : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/assignment-operator
+
+Assigns a value to a variable.
+
+```csharp
+int x = 5;
+string name = "ODIN";
+```
+
+### Nullable Operator ? : https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references
+
+Indicates a value may be null.
+
+```csharp
+string? name;
+int? count;
+WegSection? section;
+```
+
+For reference types: allows null
+
+For value types: creates Nullable<T>
+
+### Equality Operators == and != : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/equality-operators
+
+Compare two values for equality or inequality.
+
+```csharp
+if (a == b) { }
+if (a != b) { }
+```
+
+### Logical Operators &&, ||, ! : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/boolean-logical-operators
+
+Boolean logic operators.
+
+```csharp
+if (a && b) { }
+if (a || b) { }
+if (!isValid) { }
+```
+
+### Comparison Operators <, >, <=, >= : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/comparison-operators
+
+Compare numeric or comparable values.
+
+```csharp
+if (x > 10) { }
+if (y <= 5) { }
+```
+
+### Null-Conditional Operator ?. : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators#null-conditional-operators--and-
+
+Safely accesses a member.
+Returns null if the left side is null.
+
+```csharp
+var length = text?.Length;
+var name = section?.Name;
+```
+
+### Null-Coalescing Operator ?? : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator
+
+Returns the left value if not null, otherwise the right value.
+
+```csharp
+var name = input ?? "Unknown";
+```
+
+### Null-Coalescing Assignment Operator ??= : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator#null-coalescing-assignment-operator-
+
+Assigns a value only if the variable is null.
+
+```csharp
+list ??= new List<string>();
+```
+
+### Null-Forgiving Operator ! : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
+
+Tells the compiler a value is not null.
+
+```csharp
+var length = text!.Length;
+```
+
+Compile-time only
+
+Does not prevent runtime exceptions
+
+### Conditional (Ternary) Operator ?: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/conditional-operator
+
+Inline conditional expression.
+
+```csharp
+var label = count > 0 ? "Has Items" : "Empty";
+```
+
+### Increment / Decrement Operators ++, -- : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/arithmetic-operators#increment-operator-
+
+Increase or decrease a value by one.
+
+```csharp
+i++;
+--count;
+```
+
+### Arithmetic Operators +, -, *, /, % : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/arithmetic-operators
+
+Perform mathematical operations.
+
+```csharp
+var sum = a + b;
+var remainder = x % 2;
+```
+
+### Member Access Operator . : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators
+
+Accesses a member of a type.
+
+```csharp
+settings.OutputFolder
+```
+
+### new Operator : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/new-operator
+
+Creates an object or instance.
+
+```csharp
+var client = new HttpClient();
+```
+
+### typeof Operator : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast#typeof-operator
+
+Gets the Type object for a type.
+
+```csharp
+var t = typeof(string);
+```
+
+### is Operator : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast#is-operator
+
+Checks whether an object is compatible with a type.
+
+```csharp
+if (obj is WegSection section) { }
+```
+
+### as Operator : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/type-testing-and-cast#as-operator
+
+Attempts a safe cast. Returns null if it fails.
+
+```csharp
+var section = obj as WegSection;
+````
