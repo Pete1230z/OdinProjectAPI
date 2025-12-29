@@ -20,7 +20,7 @@ public sealed class WegCardQueryRepository
           wegCardCollection(query: $query, limit: $limit, offset: 0) {
               name
               dateOfIntroduction
-              origin { name }
+              origin { name velocityVar }
             }
         }";
 

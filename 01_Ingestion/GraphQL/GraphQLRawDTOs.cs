@@ -85,6 +85,11 @@ public sealed class DotCategoryDTO
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
+
+    //Reason to use velocityVar in lieu of key: *Category based queries must use the category’s “variable” value. A collection of all categories 
+    //for WEG can be found here: https://odin.tradoc.army.mil/dotcms/api/subnav/weg
+    [JsonPropertyName("velocityVar")]
+    public string? velocityVar { get; set; }
 }
 
 public sealed class WebImageDTO
