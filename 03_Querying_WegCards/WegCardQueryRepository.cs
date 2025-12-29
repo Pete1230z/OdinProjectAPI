@@ -19,7 +19,8 @@ public sealed class WegCardQueryRepository
         query WegCards($query: String!, $limit: Int!) {
           wegCardCollection(query: $query, limit: $limit, offset: 0) {
               name
-              dateOfIntroduction
+              sections
+              images
               origin { name velocityVar }
             }
         }";
