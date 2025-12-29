@@ -198,6 +198,11 @@ internal static class Program
 
             Console.WriteLine($"Matches selected origin? {matches}");
         }
+
+        var first = cards.FirstOrDefault();
+        Console.WriteLine("\n--- GraphQL payload validation ---");
+        Console.WriteLine($"Sections chars: {first?.SectionsRaw?.Length ?? 0}");
+        Console.WriteLine(first?.SectionsRaw is null ? "No Sections" : first.SectionsRaw);
     }
 
     // -------------------------
