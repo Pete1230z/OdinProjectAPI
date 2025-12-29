@@ -1,205 +1,226 @@
-﻿/* PURPOSE:
-   This file serves as the application entry point and orchestration layer.
-   Program.cs does not contain business logic or data models.
-*/
-
-
-//Load appsettings.json, bind it to strongly-typed C# classes,validate required values, and print them to the console.
-//The orchestration/wiring of the program
-
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using OdinProjectAPI.Configuration;
 using OdinProjectAPI.GraphQL;
 using OdinProjectAPI.WegSubnav;
-using System.Collections.Generic;
 using System.Text.Json;
 
-try
-    //PHASE 1: LOAD AND VALIDATE CONFIGURATION
-    /*
-        ConfigurationBuilder creates the configuration pipeline.
-        1. Where to look (BaseDirectory = runtime folder)
-        2. What sources to load (JSON file)
-        3. To build a final IConfiguration object
-    */
+internal static class Program
 {
-    //It builds a key–value tree in memory. So maps the strings in appsettings to their values
-    //Docs Configuration: https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration#basic-example
-    //Docs IConfiguration: https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.iconfiguration?view=net-10.0-pp
-    IConfiguration config = new ConfigurationBuilder()
-        .SetBasePath(AppContext.BaseDirectory)
-        .AddJsonFile(
-            path: "appsettings.json",
-            optional: false,
-            reloadOnChange: true
-        )
-        //Docs Build(): https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.configurationbuilder.build?view=net-10.0-pp#microsoft-extensions-configuration-configurationbuilder-build
-        .Build();
-
-    /*
-    Reads the JSON file
-    Creates an AppSettings object
-    Fills in properties by name
-    */
-    //Docs .Get: https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.configuration.configurationbinder.get?view=net-9.0-pp
-    var settings = config.Get<AppSettings>()
-        ?? throw new Exception("Failed to bind configuration.");
-
-    //If API returns nothing fail
-    if (string.IsNullOrWhiteSpace(settings.Odin.GraphQLEndPoint))
-        throw new Exception("Missing setting: Odin:GraphQLEndpoint");
-
-    if (string.IsNullOrWhiteSpace(settings.OutputFolder))
-        throw new Exception("Missing setting: OutputFolder");
-
-    /*
-    Output values to confirm everything loaded correctly.
-    This is just a verification step.
-    */
-    Console.WriteLine("Configuration loaded successfully:");
-    Console.WriteLine($"FSAPI Base: {settings.Odin.ForceStructureAPI}");
-    Console.WriteLine($"DISAPI Base: {settings.Odin.DISEnumerationAPI}");
-    Console.WriteLine($"GraphQL Endpoint: {settings.Odin.GraphQLEndPoint}");
-    Console.WriteLine($"Output Folder: {settings.OutputFolder}");
-
-    //PHASE 2: USE THE GRAPHQL CLIENT
-
-    // HttpClient is responsible for sending HTTP requests (POST, GET, etc.).
-    // This object manages network connections and should be reused rather than recreated repeatedly.
-    //Documentation https://learn.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-10.0
-    using var http = new HttpClient();
-
-    var client = new GraphQLTransportClient(http, settings.Odin.GraphQLEndPoint);
-
-    // This is written in the GraphQL query language, not C#.
-    // "__typename" is a special built-in GraphQL field that tells us
-    // the name of the root type returned by the server.
-    var query = @"
-    query {
-      wegCardCollection(limit: 1, offset: 0) {
-        name
-        images
-      }
-    }";
-
-    var variables = new
+    public static async Task<int> Main()
     {
-        limit = 10
-    };
-
-    // - ExecuteRawAsync sends the query to the server
-    // - await pauses execution until the HTTP response is received
-    // - result will contain the raw JSON response as a string
-    var result = await client.ExecuteRawAsync(query, variables);
-
-    Console.WriteLine("GraphQL Response");
-    Console.WriteLine(result);
-
-    //PHASE 3: Send Test Query
-
-    // Convert the raw JSON string into a typed object:
-    // GraphQLResponse<TypenameData> represents: { "data": { "__typename": "Query" } }
-    var wegParsed = JsonSerializer.Deserialize<GraphQLResponse<WegCardCollectionData>>(result);
-
-    var imageService = new WegImageParser();
-
-    var item = wegParsed?.Data?.WegCardCollection?.FirstOrDefault();
-
-    var images = imageService.ParseImages(item?.ImagesRaw);
-
-    var firstImageUrl = images.Count > 0 ? imageService.BuildAbsoluteUrl(images[0].Url) : "(no image)";
-
-    var bytes = await http.GetByteArrayAsync(firstImageUrl);
-
-    Console.WriteLine($"Card: {item?.Name}");
-    Console.WriteLine($"Url: {item?.ImagesRaw}");
-    Console.WriteLine($"First Image Url: {firstImageUrl}");
-    Console.WriteLine($"Downloaded {bytes.Length} bytes");
-
-    await WegSubnavFetcher.WegSubnavAsync();
-    await WegSubnavFetcher.InspectParsedAsync();
-    await WegSubnavFetcher.BuildAndCacheNormalizedTreeAsync();
-
-    //Testing dropdowns
-    var cache = await WegCategoryRepository.LoadAsync();
-
-    var root = cache.RootNodes[0];
-
-    var domainNode = WegCategoryRepository.FindByVariable(root, "domain")
-        ?? throw new Exception("Domain node not found.");
-
-    var domainDropdown  = WegCategoryRepository.ToDropdownOptions(domainNode);
-
-    Console.WriteLine("Domain Dropdown:");
-    foreach (var option in domainDropdown)
-    {
-        Console.WriteLine($"{option.Label} {option.Value}");
-    }
-
-    var selectedDomainVariable = domainDropdown.First(o => o.Label == "Land").Value;
-
-    var selectedDomainNode = WegCategoryRepository.FindByVariable(root, selectedDomainVariable) ?? throw new InvalidOperationException("Selected domain not found.");
-
-    var weaponSystemDropdown = WegCategoryRepository.ToDropdownOptions(selectedDomainNode);
-
-    Console.WriteLine("\nWeapon System Types (Land):");
-    foreach (var option in weaponSystemDropdown)
-    {
-        Console.WriteLine($"{option.Label} {option.Value}");
-    }
-
-    var criteria = new WegFilterCriteria
-    {
-        DomainVariable = selectedDomainVariable,
-        WeaponSystemTypeVariable = weaponSystemDropdown.First().Value
-    };
-
-    Console.WriteLine("\nCriteria:");
-    Console.WriteLine($"Domain: {criteria.DomainVariable}");
-    Console.WriteLine($"Weapon System: {criteria.WeaponSystemTypeVariable}");
-
-    criteria.TierKey = "Tier3";
-
-    var lucene = LuceneQueryBuilder.Build(criteria, settings.Weg.Tiers);
-    Console.WriteLine($"\nLucene Query:\n{lucene}");
-
-    var wegCardService = new WegCardQueryRepository(client);
-
-    var cards = await wegCardService.GetWegCardsAsync(lucene, limit: 5);
-
-    Console.WriteLine($"\nFiltered results returned: {cards.Count}");
-
-    foreach (var card in cards)
-    {
-        Console.WriteLine($"Name: {card.Name}");
-
-        if (card.Origin != null && card.Origin.Count > 0)
+        try
         {
-            Console.WriteLine($"Origin: {string.Join(", ", card.Origin.Select(o => o.Name))}");
+            var settings = LoadSettings();
+            ValidateSettings(settings);
+
+            using var http = new HttpClient();
+
+            var gqlClient = new GraphQLTransportClient(http, settings.Odin.GraphQLEndPoint!);
+            var wegRepo = new WegCardQueryRepository(gqlClient);
+
+            ValidateTiers(settings);
+            PrintTierDropdown(settings);
+
+            await RunDiagnosticsAsync(http, gqlClient);
+            var cacheRoot = await BuildOrLoadCategoryCacheAsync();
+
+            await RunFilteringDemoAsync(settings, cacheRoot, wegRepo);
+
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR: " + ex.Message);
+            return 1;
         }
     }
 
-    static void ValidateTiers(AppSettings settings)
+    // -------------------------
+    // Phase 1: Configuration
+    // -------------------------
+    private static AppSettings LoadSettings()
+    {
+        IConfiguration config = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+        return config.Get<AppSettings>()
+            ?? throw new Exception("Failed to bind configuration.");
+    }
+
+    private static void ValidateSettings(AppSettings settings)
+    {
+        if (string.IsNullOrWhiteSpace(settings.Odin.GraphQLEndPoint))
+            throw new Exception("Missing setting: Odin:GraphQLEndPoint");
+
+        if (string.IsNullOrWhiteSpace(settings.OutputFolder))
+            throw new Exception("Missing setting: OutputFolder");
+
+        Console.WriteLine("Configuration loaded successfully:");
+        Console.WriteLine($"FSAPI Base: {settings.Odin.ForceStructureAPI}");
+        Console.WriteLine($"DISAPI Base: {settings.Odin.DISEnumerationAPI}");
+        Console.WriteLine($"GraphQL Endpoint: {settings.Odin.GraphQLEndPoint}");
+        Console.WriteLine($"Output Folder: {settings.OutputFolder}");
+    }
+
+    // -------------------------
+    // Phase 2: Quick Diagnostics
+    // -------------------------
+    private static async Task RunDiagnosticsAsync(HttpClient http, GraphQLTransportClient gqlClient)
+    {
+        Console.WriteLine("\n--- Diagnostics: GraphQL + image download ---");
+
+        var query = @"
+        query WegCards($limit: Int!) {
+          wegCardCollection(limit: $limit, offset: 0) {
+            name
+            images
+          }
+        }";
+
+        var variables = new { limit = 1 };
+
+        var raw = await gqlClient.ExecuteRawAsync(query, variables);
+        var parsed = JsonSerializer.Deserialize<GraphQLResponse<WegCardCollectionData>>(
+            raw,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        var item = parsed?.Data?.WegCardCollection?.FirstOrDefault();
+        var imageService = new WegImageParser();
+        var images = imageService.ParseImages(item?.ImagesRaw);
+
+        var firstImageUrl = images.Count > 0
+            ? imageService.BuildAbsoluteUrl(images[0].Url)
+            : string.Empty;
+
+        Console.WriteLine($"Card: {item?.Name}");
+        Console.WriteLine($"First Image Url: {(string.IsNullOrWhiteSpace(firstImageUrl) ? "(no image)" : firstImageUrl)}");
+
+        if (!string.IsNullOrWhiteSpace(firstImageUrl))
+        {
+            var bytes = await http.GetByteArrayAsync(firstImageUrl);
+            Console.WriteLine($"Downloaded {bytes.Length} bytes");
+        }
+    }
+
+    // -------------------------
+    // Phase 3: Categories (subnav)
+    // -------------------------
+    private static async Task<WegCategoryNode> BuildOrLoadCategoryCacheAsync()
+    {
+        Console.WriteLine("\n--- Categories: subnav fetch + normalize + load ---");
+
+        await WegSubnavFetcher.WegSubnavAsync();
+        await WegSubnavFetcher.InspectParsedAsync();
+        await WegSubnavFetcher.BuildAndCacheNormalizedTreeAsync();
+
+        var cache = await WegCategoryRepository.LoadAsync();
+        if (cache.RootNodes.Count == 0)
+            throw new Exception("weg-categories.json contained zero root nodes.");
+
+        return cache.RootNodes[0];
+    }
+
+    // -------------------------
+    // Phase 4: Filtering demo
+    // -------------------------
+    private static async Task RunFilteringDemoAsync(
+        AppSettings settings,
+        WegCategoryNode root,
+        WegCardQueryRepository wegRepo)
+    {
+        Console.WriteLine("\n--- Filtering demo ---");
+
+        // Domain dropdown
+        var domainNode = WegCategoryRepository.FindByVariable(root, "domain")
+            ?? throw new Exception("Domain node not found.");
+
+        var domainDropdown = WegCategoryRepository.ToDropdownOptions(domainNode);
+        var selectedDomainVariable = domainDropdown.First(o => o.Label == "Land").Value;
+
+        // Weapon System dropdown for selected domain
+        var selectedDomainNode = WegCategoryRepository.FindByVariable(root, selectedDomainVariable)
+            ?? throw new Exception("Selected domain not found.");
+
+        var weaponSystemDropdown = WegCategoryRepository.ToDropdownOptions(selectedDomainNode);
+        var selectedWeaponSystemVariable = weaponSystemDropdown.First().Value;
+
+        var criteria = new WegFilterCriteria
+        {
+            DomainVariable = selectedDomainVariable,
+            WeaponSystemTypeVariable = selectedWeaponSystemVariable,
+            TierKey = "Tier3"
+        };
+
+        var lucene = LuceneQueryBuilder.Build(criteria, settings.Weg.Tiers);
+        Console.WriteLine($"\nLucene Query:\n{lucene}");
+
+        var cards = await wegRepo.GetWegCardsAsync(lucene, limit: 5);
+        Console.WriteLine($"\nFiltered results returned: {cards.Count}");
+
+        // Build origin dropdown from results
+        var originOptions = cards
+            .Where(c => c.Origin != null)
+            .SelectMany(c => c.Origin!)
+            .Where(o => !string.IsNullOrWhiteSpace(o?.VelocityVar) && !string.IsNullOrWhiteSpace(o?.Name))
+            .GroupBy(o => o!.VelocityVar!, StringComparer.OrdinalIgnoreCase)
+            .Select(g => new DropdownOption { Value = g.Key, Label = g.First()!.Name! })
+            .OrderBy(o => o.Label)
+            .ToList();
+
+        Console.WriteLine("\nOrigin Dropdown:");
+        foreach (var opt in originOptions)
+            Console.WriteLine($"Value: {opt.Value} Label: {opt.Label}");
+
+        if (originOptions.Count == 0)
+            throw new Exception("No origin options detected.");
+
+        // Apply origin filter
+        var selectedOrigin = originOptions.First();
+        criteria.OriginVariable = selectedOrigin.Value;
+
+        var luceneWithOrigin = LuceneQueryBuilder.Build(criteria, settings.Weg.Tiers);
+        Console.WriteLine($"\nLucene Query with Origin:\n{luceneWithOrigin}");
+
+        var cardsWithOrigin = await wegRepo.GetWegCardsAsync(luceneWithOrigin, limit: 5);
+
+        foreach (var card in cardsWithOrigin)
+        {
+            Console.WriteLine($"\nName: {card.Name}");
+            var origins = card.Origin ?? new List<DotCategoryDTO>();
+
+            foreach (var o in origins)
+                Console.WriteLine($"Origin: {o.Name} | var={o.VelocityVar}");
+
+            var matches = origins.Any(o =>
+                string.Equals(o.VelocityVar, selectedOrigin.Value, StringComparison.OrdinalIgnoreCase));
+
+            Console.WriteLine($"Matches selected origin? {matches}");
+        }
+    }
+
+    // -------------------------
+    // Tier helpers
+    // -------------------------
+    private static void ValidateTiers(AppSettings settings)
     {
         var tiers = settings.Weg.Tiers;
+        if (tiers == null || tiers.Count == 0)
+            throw new Exception("Tier config missing or empty: Weg:Tiers");
 
-        Console.WriteLine($"Tier config OK. Loaded {tiers.Count} tiers.");
+        Console.WriteLine($"\nTier config OK. Loaded {tiers.Count} tiers.");
     }
 
-    ValidateTiers(settings);
-
-    var tierDropdown = settings.Weg.Tiers.Select(t => new DropdownOption {  Label = t.Label, Value = t.Key}).OrderBy(o => o.Label).ToList();
-
-    foreach (var tier in tierDropdown)
+    private static void PrintTierDropdown(AppSettings settings)
     {
-        Console.WriteLine($"{tier.Label} {tier.Value}");
+        var tierDropdown = settings.Weg.Tiers
+            .Select(t => new DropdownOption { Label = t.Label, Value = t.Key })
+            .OrderBy(o => o.Label)
+            .ToList();
+
+        Console.WriteLine("\nTier Dropdown:");
+        foreach (var tier in tierDropdown)
+            Console.WriteLine($"{tier.Label} {tier.Value}");
     }
-
 }
-catch (Exception ex)
-{
-    Console.WriteLine("ERROR:" + ex.Message);
-    //The 1 exit code indicates unknown errors and acts as a catch all. 
-    Environment.ExitCode = 1;
-}
-
