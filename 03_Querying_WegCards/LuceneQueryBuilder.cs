@@ -35,7 +35,7 @@ public static class LuceneQueryBuilder
         //Origin
         if (!string.IsNullOrWhiteSpace(criteria.OriginVariable))
         {
-            clauses.Add($"+categories: {EscapeLuceneTerm(criteria.OriginVariable.Trim())}");
+            clauses.Add($"+categories:{EscapeLuceneTerm(criteria.OriginVariable.Trim())}");
         }
 
         //Tier -> dateOfIntroduction range
