@@ -13,11 +13,11 @@ public sealed class WegCardQueryRepository
         _client = client;
     }
 
-    public async Task<List<WegCardItem>> GetWegCardsAsync(string LuceneQuery, int limit = 10)
+    public async Task<List<WegCardItem>> GetWegCardsAsync(string LuceneQuery, int limit = 700, int offset = 0)
     {
         var gql = @"
-        query WegCards($query: String!, $limit: Int!) {
-          wegCardCollection(query: $query, limit: $limit, offset: 0) {
+        query WegCards($query: String!, $limit: Int!, $offset: Int!) {
+          wegCardCollection(query: $query, limit: $limit, offset: $offset) {
               name
               sections
               images
@@ -28,7 +28,8 @@ public sealed class WegCardQueryRepository
         var variables = new
         {
             query = LuceneQuery,
-            limit
+            limit,
+            offset
         };
 
         var rawJson = await _client.ExecuteRawAsync(gql, variables);
