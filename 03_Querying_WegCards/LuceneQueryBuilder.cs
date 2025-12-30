@@ -27,29 +27,26 @@ public static class LuceneQueryBuilder
         }
 
         //Weapon system category fields
-        if (!string.IsNullOrWhiteSpace(criteria.WeaponSystemTypeVariable))
-        {
-            clauses.Add($"+categories:{EscapeLuceneTerm(criteria.WeaponSystemTypeVariable.Trim())}");
-        }
+        AddOrGroup(clauses, "categories", criteria.WeaponSystemTypeVariable ?? Enumerable.Empty<string>());
 
         //Origin
-        if (!string.IsNullOrWhiteSpace(criteria.OriginVariable))
-        {
-            clauses.Add($"+categories:{EscapeLuceneTerm(criteria.OriginVariable.Trim())}");
-        }
+        AddOrGroup(clauses, "categories", criteria.OriginVariable ?? Enumerable.Empty<string>());
 
-        //Tier -> dateOfIntroduction range
-        if (!string.IsNullOrWhiteSpace(criteria.TierKey))
+        // Find tier definitions matching the requested tier keys
+        if (criteria.TierKey != null && criteria.TierKey.Count > 0)
         {
-            var tier = tiers.FirstOrDefault(t => string.Equals(t.Key, criteria.TierKey, StringComparison.OrdinalIgnoreCase));
+            var selectedTiers = tiers.Where(t => criteria.TierKey.Any(k => string.Equals(k, t.Key, StringComparison.OrdinalIgnoreCase))).ToList();
 
-            if (tier == null)
+            if (selectedTiers.Count == 0)
                 //Docs Exceptions: https://learn.microsoft.com/en-us/dotnet/standard/exceptions/
-                throw new InvalidOperationException($"Unknown TierKey: {criteria.TierKey}");
+                throw new InvalidOperationException("No matching tiers found.");
+
+            var from = selectedTiers.Min(t => t.From).ToUniversalTime();
+            var to = selectedTiers.Max(t => t.To).ToUniversalTime();
 
             //Docs InvariantCulture: https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.invariantculture?view=net-10.0
-            var fromStr = tier.From.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-            var toStr = tier.To.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            var fromStr = from.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+            var toStr = to.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
 
             clauses.Add($"+WegCard.dateOfIntroduction:[ {fromStr} TO {toStr} ]");
         }
@@ -66,5 +63,19 @@ public static class LuceneQueryBuilder
         return value
             .Replace("\\", "\\\\")
             .Replace("\"", "\\\"");
+    }
+
+    //Docs IEnumerable: https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1?view=net-10.0
+    private static void AddOrGroup(List<string> clauses, string field, IEnumerable<string> values)
+    {
+        var cleaned = values
+            .Where(v => !string.IsNullOrWhiteSpace(v))
+            .Select(v => $"{field}:{EscapeLuceneTerm(v.Trim())}")
+            .ToList();
+
+        if (cleaned.Count == 0) return;
+
+        // +(categories:a categories:b categories:c)
+        clauses.Add("+(" + string.Join(" ", cleaned) + ")");
     }
 }
