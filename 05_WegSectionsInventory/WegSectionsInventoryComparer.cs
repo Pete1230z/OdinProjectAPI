@@ -48,7 +48,7 @@ public sealed class WegSectionsInventoryComparer
                 if (string.IsNullOrWhiteSpace(propName)) propName = "Unnamed Property";
 
                 // Key format: "Section :: Property"
-                Increment(PropertyCounts, $"{section.Name} :: {propName}");
+                Increment(PropertyCounts, $"{sectionName} :: {propName}");
             }
         }
 
