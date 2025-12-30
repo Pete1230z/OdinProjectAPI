@@ -3,6 +3,7 @@ using OdinProjectAPI.Configuration;
 using OdinProjectAPI.GraphQL;
 using OdinProjectAPI.WegSubnav;
 using System.Text.Json;
+using OdinProjectAPI.Inventory;
 
 internal static class Program
 {
@@ -144,20 +145,51 @@ internal static class Program
             ?? throw new Exception("Selected domain not found.");
 
         var weaponSystemDropdown = WegCategoryRepository.ToDropdownOptions(selectedDomainNode);
-        var selectedWeaponSystemVariable = weaponSystemDropdown.First().Value;
+        var selectedWeaponSystemVariable = weaponSystemDropdown.Take(3).Select(o => o.Value).ToList();
 
         var criteria = new WegFilterCriteria
         {
             DomainVariable = selectedDomainVariable,
+
             WeaponSystemTypeVariable = selectedWeaponSystemVariable,
-            TierKey = "Tier3"
+
+            TierKey = new List<string>
+            {
+                "Tier2",
+                "Tier3"
+            }
         };
 
         var lucene = LuceneQueryBuilder.Build(criteria, settings.Weg.Tiers);
         Console.WriteLine($"\nLucene Query:\n{lucene}");
 
-        var cards = await wegRepo.GetWegCardsAsync(lucene, limit: 5);
+        var cards = await wegRepo.GetWegCardsAsync(lucene, limit:5, offset: 0);
         Console.WriteLine($"\nFiltered results returned: {cards.Count}");
+
+        var inventory = new WegSectionsInventoryComparer();
+
+        const int pageSize = 700;
+        var offset = 0;
+        var total = 0;
+        
+        while(true)
+        {
+            var page = await wegRepo.GetWegCardsAsync(lucene, limit: pageSize, offset:offset);
+            if (page.Count == 0) break;
+
+            total += page.Count;
+
+            foreach (var card in page)
+            {
+                var parsedSections = WegSectionsParser.Parse(card.SectionsRaw);
+                inventory.AddCardSections(parsedSections);
+            }
+
+            Console.WriteLine($"Inventory processed {page.Count} cards (offset {offset}) total {total}");
+
+            if (page.Count < pageSize) break;
+            offset += pageSize;
+        }
 
         // Build origin dropdown from results
         var originOptions = cards
@@ -178,12 +210,15 @@ internal static class Program
 
         // Apply origin filter
         var selectedOrigin = originOptions.First();
-        criteria.OriginVariable = selectedOrigin.Value;
+        criteria.OriginVariable = new List<string>
+        {
+            
+        };
 
         var luceneWithOrigin = LuceneQueryBuilder.Build(criteria, settings.Weg.Tiers);
         Console.WriteLine($"\nLucene Query with Origin:\n{luceneWithOrigin}");
 
-        var cardsWithOrigin = await wegRepo.GetWegCardsAsync(luceneWithOrigin, limit: 5);
+        var cardsWithOrigin = await wegRepo.GetWegCardsAsync(luceneWithOrigin, limit: 5, offset: 0);
 
         foreach (var card in cardsWithOrigin)
         {
