@@ -7,7 +7,7 @@ using OdinProjectAPI.GraphQL;
 using System.Text.Json;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
-namespace OdinProjectAPI.OutPut;
+namespace OdinProjectAPI.Output;
 
 public sealed class WegImageParser
 {
