@@ -51,7 +51,7 @@ public abstract class BaseService
 }
 ```
 
-### Static Class
+### Static Class: https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/static-classes-and-static-class-members
 
 A class that cannot be instantiated or inherited.
 
