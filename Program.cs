@@ -4,6 +4,7 @@ using OdinProjectAPI.GraphQL;
 using OdinProjectAPI.WegSubnav;
 using System.Text.Json;
 using OdinProjectAPI.Inventory;
+using OdinProjectAPI.Output;
 
 internal static class Program
 {
@@ -138,23 +139,33 @@ internal static class Program
             ?? throw new Exception("Domain node not found.");
 
         var domainDropdown = WegCategoryRepository.ToDropdownOptions(domainNode);
-        var selectedDomainVariable = domainDropdown.First(o => o.Label == "Land").Value;
+        var selectedDomainVariable = domainDropdown.First(o => o.Label == "Air").Value;
 
         // Weapon System dropdown for selected domain
         var selectedDomainNode = WegCategoryRepository.FindByVariable(root, selectedDomainVariable)
             ?? throw new Exception("Selected domain not found.");
 
         var weaponSystemDropdown = WegCategoryRepository.ToDropdownOptions(selectedDomainNode);
-        var selectedWeaponSystemVariable = weaponSystemDropdown.Take(3).Select(o => o.Value).ToList();
+        //var selectedWeaponSystemVariable = weaponSystemDropdown.First(o => o.Label == "Infantry Weapons").Value;
 
         var criteria = new WegFilterCriteria
         {
             DomainVariable = selectedDomainVariable,
 
-            WeaponSystemTypeVariable = selectedWeaponSystemVariable,
+            WeaponSystemTypeVariable = new List<string>
+            {
+                "aircraft-42b8bd"
+            },
+
+            OriginVariable = new List<string>
+            {
+                 "china--people-s-republic-of-d6ee02",
+                 "russia--rus--f8577e"
+            },
 
             TierKey = new List<string>
             {
+                "Tier1",
                 "Tier2",
                 "Tier3"
             }
@@ -191,53 +202,15 @@ internal static class Program
             offset += pageSize;
         }
 
-        // Build origin dropdown from results
-        var originOptions = cards
-            .Where(c => c.Origin != null)
-            .SelectMany(c => c.Origin!)
-            .Where(o => !string.IsNullOrWhiteSpace(o?.VelocityVar) && !string.IsNullOrWhiteSpace(o?.Name))
-            .GroupBy(o => o!.VelocityVar!, StringComparer.OrdinalIgnoreCase)
-            .Select(g => new DropdownOption { Value = g.Key, Label = g.First()!.Name! })
-            .OrderBy(o => o.Label)
-            .ToList();
+        DumpTop("Top-Level Sections", inventory.SectionCounts, 50);
+        DumpTop("Subsections", inventory.SubsectionCounts, 50);
+        DumpTop("Properties", inventory.PropertyCounts, 100);
 
-        Console.WriteLine("\nOrigin Dropdown:");
-        foreach (var opt in originOptions)
-            Console.WriteLine($"Value: {opt.Value} Label: {opt.Label}");
 
-        if (originOptions.Count == 0)
-            throw new Exception("No origin options detected.");
-
-        // Apply origin filter
-        var selectedOrigin = originOptions.First();
-        criteria.OriginVariable = new List<string>
-        {
-            
-        };
-
-        var luceneWithOrigin = LuceneQueryBuilder.Build(criteria, settings.Weg.Tiers);
-        Console.WriteLine($"\nLucene Query with Origin:\n{luceneWithOrigin}");
-
-        var cardsWithOrigin = await wegRepo.GetWegCardsAsync(luceneWithOrigin, limit: 5, offset: 0);
-
-        foreach (var card in cardsWithOrigin)
-        {
-            Console.WriteLine($"\nName: {card.Name}");
-            var origins = card.Origin ?? new List<DotCategoryDTO>();
-
-            foreach (var o in origins)
-                Console.WriteLine($"Origin: {o.Name} | var={o.VelocityVar}");
-
-            var matches = origins.Any(o =>
-                string.Equals(o.VelocityVar, selectedOrigin.Value, StringComparison.OrdinalIgnoreCase));
-
-            Console.WriteLine($"Matches selected origin? {matches}");
-        }
-
-        var first = cards.FirstOrDefault();
-        Console.WriteLine("\n--- GraphQL payload validation ---");
-        Console.WriteLine($"Sections chars: {first?.SectionsRaw?.Length ?? 0}");
-        Console.WriteLine(first?.SectionsRaw is null ? "No Sections" : first.SectionsRaw);
+        //var first = cards.FirstOrDefault();
+        //Console.WriteLine("\n--- GraphQL payload validation ---");
+        //Console.WriteLine($"Sections chars: {first?.SectionsRaw?.Length ?? 0}");
+        //Console.WriteLine(first?.SectionsRaw is null ? "No Sections" : first.SectionsRaw);
     }
 
     // -------------------------
@@ -263,4 +236,12 @@ internal static class Program
         foreach (var tier in tierDropdown)
             Console.WriteLine($"{tier.Label} {tier.Value}");
     }
+
+    private static void DumpTop(string title, Dictionary<string, int> dict, int top)
+    {
+        Console.WriteLine($"\n=== {title} (top {top}) ===");
+        foreach (var kv in dict.OrderByDescending(k => k.Value).Take(top))
+            Console.WriteLine($"{kv.Value,4}  {kv.Key}");
+    }
+
 }
