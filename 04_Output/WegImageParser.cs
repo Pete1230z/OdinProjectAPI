@@ -3,11 +3,11 @@ PURPOSE:
 These helper methods handle ODIN WEG "images" data, which is returned by GraphQL
 as a JSON string rather than a structured object.
 */
-
+using OdinProjectAPI.GraphQL;
 using System.Text.Json;
 
 //Documenation for namespaces: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/namespaces
-namespace OdinProjectAPI.GraphQL;
+namespace OdinProjectAPI.OutPut;
 
 public sealed class WegImageParser
 {
