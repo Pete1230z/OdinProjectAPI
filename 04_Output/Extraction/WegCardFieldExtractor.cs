@@ -43,7 +43,7 @@ public static class WegCardFieldExtractor
         foreach (var key in fallbacks)
         {
             // Try to find a value like "System::Maximum Range"
-            if (index.TryGetValue(key, out var value) &$ !string.IsNullOrWhiteSpace(value))
+            if (index.TryGetValue(key, out var value) && !string.IsNullOrWhiteSpace(value))
             {
                 return value.Trim();
             }
