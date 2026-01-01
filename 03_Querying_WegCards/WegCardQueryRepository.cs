@@ -21,7 +21,7 @@ public sealed class WegCardQueryRepository
               name
               sections
               images
-              origin { name velocityVar }
+              proliferation { name velocityVar }
             }
         }";
 

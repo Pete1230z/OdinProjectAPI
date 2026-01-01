@@ -30,7 +30,7 @@ public static class LuceneQueryBuilder
         AddOrGroup(clauses, "categories", criteria.WeaponSystemTypeVariable ?? Enumerable.Empty<string>());
 
         //Origin
-        AddOrGroup(clauses, "categories", criteria.OriginVariable ?? Enumerable.Empty<string>());
+        AddOrGroup(clauses, "categories", criteria.ProliferationVariable ?? Enumerable.Empty<string>());
 
         // Find tier definitions matching the requested tier keys
         if (criteria.TierKey != null && criteria.TierKey.Count > 0)

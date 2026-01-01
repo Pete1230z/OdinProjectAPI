@@ -10,7 +10,7 @@ public sealed class WegFilterCriteria
     public List<string>? WeaponSystemTypeVariable { get; set; }
 
     // Origin filters (from GraphQL), not from DotCMS subnav
-    public List<string>? OriginVariable { get; set; }
+    public List<string>? ProliferationVariable { get; set; }
 
     // Tier range mapped to dateOfIntroduction (Lucene range)
     public List<string>? TierKey { get; set; }

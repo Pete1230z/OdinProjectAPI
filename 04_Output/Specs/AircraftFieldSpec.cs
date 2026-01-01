@@ -4,7 +4,7 @@ public static class AircraftFieldSpec
 {
     public static readonly string[] Columns =
     {
-        "Name","Type","ImageUrl", "MaxSpeed","CruiseSpeed","Endurance","Ceiling","Range","Crew"
+        "Name","Type","ImageUrl","MaxSpeed","CruiseSpeed","Endurance","Ceiling","Range","Crew"
     };
 
     // Use OrdinalIgnoreCase because ODIN section/property names are human-authored

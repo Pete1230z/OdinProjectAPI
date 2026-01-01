@@ -139,7 +139,7 @@ internal static class Program
             ?? throw new Exception("Domain node not found.");
 
         var domainDropdown = WegCategoryRepository.ToDropdownOptions(domainNode);
-        var selectedDomainVariable = domainDropdown.First(o => o.Label == "Air").Value;
+        var selectedDomainVariable = domainDropdown.First(o => o.Label == "Land").Value;
 
         // Weapon System dropdown for selected domain
         var selectedDomainNode = WegCategoryRepository.FindByVariable(root, selectedDomainVariable)
@@ -154,13 +154,13 @@ internal static class Program
 
             WeaponSystemTypeVariable = new List<string>
             {
-                "aircraft-42b8bd"
+                "infantry-weapons-6965ab"
             },
 
-            OriginVariable = new List<string>
+            ProliferationVariable = new List<string>
             {
-                 "china--people-s-republic-of-d6ee02",
-                 "russia--rus--f8577e"
+                 "china-ec9988",
+                 "russian-federation-d267e5"
             },
 
             TierKey = new List<string>
