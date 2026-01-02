@@ -483,7 +483,7 @@ Assigns a value only if the variable is null.
 list ??= new List<string>();
 ```
 
-### Null-Forgiving Operator ! : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
+### Null-Forgiving Operator !. : https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving
 
 Tells the compiler a value is not null.
 
