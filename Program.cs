@@ -154,7 +154,7 @@ internal static class Program
 
             WeaponSystemTypeVariable = new List<string>
             {
-                "infantry-weapons-6965ab"
+                   "tanks-e9e2f3"
             },
 
             ProliferationVariable = new List<string>
